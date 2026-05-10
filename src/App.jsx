@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Support from "./pages/Support";
 import Terms from "./pages/Terms";
+import Verified from "./pages/Verified";
 
 export default function App() {
   const { i18n } = useTranslation();
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/support" element={<Support />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/auth/verified" element={<Verified />} />
       </Routes>
 
       <Footer />

@@ -124,6 +124,13 @@ const resources = {
       footer: {
         text: "Good for you. Good for the community.",
       },
+      verified: {
+        badge: "Email verified",
+        title: "You're verified!",
+        text: "Your SawaSwap account email has been confirmed successfully. You can now return to the app and start trading, selling, buying, and matching safely.",
+        home: "Back to home",
+        support: "Need help?",
+      },
     },
   },
   ar: {
@@ -245,6 +252,13 @@ const resources = {
       },
       footer: {
         text: "جيد لك. جيد للمجتمع.",
+      },
+      verified: {
+        badge: "تم تأكيد البريد",
+        title: "تم التحقق بنجاح!",
+        text: "تم تأكيد بريدك الإلكتروني في SawaSwap بنجاح. يمكنك الآن الرجوع إلى التطبيق والبدء بالتبديل والبيع والشراء والمطابقة بأمان.",
+        home: "العودة للرئيسية",
+        support: "تحتاج مساعدة؟",
       },
     },
   },
