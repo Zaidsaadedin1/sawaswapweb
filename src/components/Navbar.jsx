@@ -28,6 +28,10 @@ export default function Navbar() {
                     {t("nav.home")}
                 </NavLink>
 
+                <NavLink to="/how-it-works" onClick={() => setOpen(false)}>
+                    {t("nav.howItWorks")}
+                </NavLink>
+
                 <NavLink to="/about" onClick={() => setOpen(false)}>
                     {t("nav.about")}
                 </NavLink>

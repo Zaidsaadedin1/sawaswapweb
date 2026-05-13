@@ -9,6 +9,7 @@ import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Verified from "./pages/Verified";
 import DeleteAccount from "./pages/DeleteAccount";
+import HowItWorks from "./pages/HowItWorks";
 
 export default function App() {
   const { i18n } = useTranslation();
@@ -20,6 +21,7 @@ export default function App() {
 
         <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/about" element={<About />} />
         <Route path="/support" element={<Support />} />
         <Route path="/terms" element={<Terms />} />

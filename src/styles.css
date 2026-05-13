@@ -390,7 +390,8 @@ button {
 }
 
 .aboutPage,
-.termsPage {
+.termsPage,
+.howItWorksPage {
   align-items: start;
 }
 
@@ -555,6 +556,111 @@ button {
   color: var(--green);
   border-radius: 22px;
   font-weight: 900;
+}
+
+/* How it works page */
+
+.howItWorksHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.howItWorksHeroIcon {
+  width: 86px;
+  height: 86px;
+  border-radius: 28px;
+  background: var(--navy);
+  color: var(--green);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 18px 40px rgba(10, 37, 64, 0.16);
+}
+
+.howItWorksHeroIcon svg {
+  width: 40px;
+  height: 40px;
+}
+
+.howStepsGrid {
+  margin-top: 38px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.howStepCard {
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 18px 40px rgba(10, 37, 64, 0.06);
+}
+
+.howStepTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.howStepIcon {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  background: var(--soft-green);
+  color: var(--green);
+  display: grid;
+  place-items: center;
+}
+
+.howStepNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(10, 37, 64, 0.06);
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.howStepCard h2 {
+  margin: 18px 0 0;
+  font-size: 26px;
+  letter-spacing: -0.7px;
+}
+
+.howStepCard p {
+  margin-top: 14px;
+  font-size: 16px;
+}
+
+.howSummaryBox {
+  margin-top: 28px;
+  padding: 28px;
+  background: linear-gradient(135deg, var(--navy) 0%, #12385d 100%);
+  border-radius: 30px;
+  color: var(--white);
+}
+
+.howSummaryBox h2 {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: -0.8px;
+}
+
+.howSummaryBox p {
+  margin: 14px 0 0;
+  max-width: none;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 800;
 }
 
 /* Terms page */
@@ -871,7 +977,9 @@ button {
 
 [dir="rtl"] .aboutListItem,
 [dir="rtl"] .safetyBox,
-[dir="rtl"] .termsHeader {
+[dir="rtl"] .termsHeader,
+[dir="rtl"] .howItWorksHeader,
+[dir="rtl"] .howStepCard {
   text-align: right;
 }
 
@@ -923,11 +1031,13 @@ button {
 @media (max-width: 820px) {
   .aboutGrid,
   .aboutList,
-  .deleteMeta {
+  .deleteMeta,
+  .howStepsGrid {
     grid-template-columns: 1fr;
   }
 
-  .termsHeader {
+  .termsHeader,
+  .howItWorksHeader {
     flex-direction: column;
   }
 

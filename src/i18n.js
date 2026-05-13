@@ -6,6 +6,7 @@ const resources = {
     translation: {
       nav: {
         home: "Home",
+        howItWorks: "How It Works",
         about: "About",
         support: "Support",
         terms: "Terms",
@@ -62,6 +63,34 @@ const resources = {
         communityTitle: "Good for you. Good for the community.",
         community:
           "Every successful swap gives an item a second life. SawaSwap encourages practical, local, and community-friendly exchange.",
+      },
+      howItWorks: {
+        badge: "How It Works",
+        title: "The app works in a few simple steps.",
+        intro:
+          "Create your profile, post an item, explore the feed, and manage offers in one flow designed for swapping, buying, and selling.",
+        stepLabel: "Step {{number}}",
+        steps: [
+          {
+            title: "Create your profile.",
+            body: "Add your basic account details and phone number so you can post items and respond to offers.",
+          },
+          {
+            title: "Post an item.",
+            body: "Add a title, category, description, location, estimated value, and photo so other users understand what you’re offering.",
+          },
+          {
+            title: "Explore and match.",
+            body: "Browse items on the home feed, use filters like trade, sell, buy, or category, and swipe or open listings to find relevant items.",
+          },
+          {
+            title: "Send or review offers.",
+            body: "When you find something suitable, make an offer. You can also review incoming offers and continue the conversation from there.",
+          },
+        ],
+        summaryTitle: "In short",
+        summary:
+          "Create profile -> post item -> browse items -> make or review offers -> continue conversation.",
       },
       support: {
         title: "Support",
@@ -234,6 +263,7 @@ const resources = {
     translation: {
       nav: {
         home: "الرئيسية",
+        howItWorks: "كيف يعمل",
         about: "عن التطبيق",
         support: "الدعم",
         terms: "الشروط",
@@ -288,6 +318,34 @@ const resources = {
         communityTitle: "جيد لك. جيد للمجتمع.",
         community:
           "كل عملية تبديل ناجحة تمنح الغرض فرصة استخدام جديدة. SawaSwap يشجع التبادل المحلي العملي والمفيد للمجتمع.",
+      },
+      howItWorks: {
+        badge: "كيف يعمل",
+        title: "يعمل التطبيق من خلال خطوات بسيطة وواضحة.",
+        intro:
+          "أنشئ ملفك الشخصي، انشر غرضك، استكشف المنشورات، ثم أدر العروض ضمن تجربة واحدة مخصصة للتبديل والشراء والبيع.",
+        stepLabel: "الخطوة {{number}}",
+        steps: [
+          {
+            title: "أنشئ ملفك الشخصي.",
+            body: "أضف بيانات حسابك الأساسية ورقم الهاتف حتى تتمكن من نشر الأغراض والرد على العروض.",
+          },
+          {
+            title: "انشر غرضاً.",
+            body: "أضف عنواناً، تصنيفاً، وصفاً، موقعاً، قيمة تقديرية، وصورة حتى يفهم المستخدمون الآخرون ما الذي تعرضه.",
+          },
+          {
+            title: "استكشف وطابق.",
+            body: "تصفح الأغراض في الصفحة الرئيسية، استخدم فلاتر مثل تبديل أو بيع أو شراء أو التصنيف، واسحب أو افتح المنشورات للعثور على ما يناسبك.",
+          },
+          {
+            title: "أرسل أو راجع العروض.",
+            body: "عندما تجد شيئاً مناسباً، قدّم عرضاً. ويمكنك أيضاً مراجعة العروض الواردة ومتابعة المحادثة من هناك.",
+          },
+        ],
+        summaryTitle: "باختصار",
+        summary:
+          "أنشئ ملفاً شخصياً -> انشر غرضاً -> تصفح الأغراض -> قدّم أو راجع العروض -> أكمل المحادثة.",
       },
       support: {
         title: "الدعم",
