@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Mail, MapPin, Send } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Support() {
     const { t } = useTranslation();
@@ -32,6 +33,10 @@ export default function Support() {
                         <span>{t("support.location")}</span>
                     </div>
                 </div>
+
+                <Link className="supportLinkCard" to="/delete-account">
+                    {t("support.deleteAccountLink")}
+                </Link>
             </motion.section>
         </main>
     );

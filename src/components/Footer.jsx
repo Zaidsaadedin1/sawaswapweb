@@ -19,6 +19,7 @@ export default function Footer() {
                 <Link to="/support">{t("nav.support")}</Link>
                 <Link to="/terms">{t("nav.terms")}</Link>
                 <Link to="/privacy">{t("nav.privacy")}</Link>
+                <Link to="/delete-account">{t("nav.deleteAccount")}</Link>
             </div>
 
             <div className="footerInfo">

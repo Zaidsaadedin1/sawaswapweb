@@ -8,6 +8,7 @@ import Support from "./pages/Support";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Verified from "./pages/Verified";
+import DeleteAccount from "./pages/DeleteAccount";
 
 export default function App() {
   const { i18n } = useTranslation();
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/support" element={<Support />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/delete-account" element={<DeleteAccount />} />
         <Route path="/auth/verified" element={<Verified />} />
       </Routes>
 

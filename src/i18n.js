@@ -10,6 +10,7 @@ const resources = {
         support: "Support",
         terms: "Terms",
         privacy: "Privacy",
+        deleteAccount: "Delete Account",
       },
       hero: {
         badge: "Swap • Buy • Sell Together",
@@ -68,6 +69,32 @@ const resources = {
         email: "support@sawaswap.com",
         noreply: "no-reply@sawaswap.com",
         location: "Jordan",
+        deleteAccountLink: "Account and data deletion",
+      },
+      deleteAccount: {
+        badge: "Account Deletion",
+        title: "SawaSwap Account and Data Deletion",
+        intro:
+          "Users can request deletion of their SawaSwap account and associated data by emailing us at support@sawaswap.com from the email address used in the app.",
+        emailInstruction:
+          "Send your request from the same email address used for your SawaSwap account.",
+        subjectLabel: "Email subject",
+        subjectValue: "Delete my SawaSwap account",
+        includeLabel: "Please include",
+        includeValue: "Your SawaSwap account email in the message.",
+        deletedTitle: "When your account is deleted, we delete:",
+        items: [
+          "Profile information",
+          "Item listings",
+          "Uploaded item photos",
+          "Likes",
+          "Skips",
+          "Matches",
+          "Chat messages associated with your account",
+        ],
+        retentionTitle: "Limited retention",
+        retentionBody:
+          "Some limited data may be kept for a short period if required for security, fraud prevention, legal, or technical backup reasons. Deletion requests are processed as quickly as possible.",
       },
       terms: {
         badge: "Legal",
@@ -211,6 +238,7 @@ const resources = {
         support: "الدعم",
         terms: "الشروط",
         privacy: "الخصوصية",
+        deleteAccount: "حذف الحساب",
       },
       hero: {
         badge: "بدّل • اشتري • بيع معاً",
@@ -267,6 +295,32 @@ const resources = {
         email: "support@sawaswap.com",
         noreply: "no-reply@sawaswap.com",
         location: "الأردن",
+        deleteAccountLink: "حذف الحساب والبيانات",
+      },
+      deleteAccount: {
+        badge: "حذف الحساب",
+        title: "حذف حساب وبيانات SawaSwap",
+        intro:
+          "يمكن للمستخدمين طلب حذف حسابهم في SawaSwap والبيانات المرتبطة به عبر مراسلتنا على support@sawaswap.com من نفس البريد الإلكتروني المستخدم داخل التطبيق.",
+        emailInstruction:
+          "أرسل طلب الحذف من نفس عنوان البريد الإلكتروني المستخدم في حساب SawaSwap.",
+        subjectLabel: "عنوان الرسالة",
+        subjectValue: "Delete my SawaSwap account",
+        includeLabel: "يرجى تضمين",
+        includeValue: "البريد الإلكتروني المرتبط بحسابك في SawaSwap داخل الرسالة.",
+        deletedTitle: "عند حذف الحساب، نقوم بحذف:",
+        items: [
+          "معلومات الملف الشخصي",
+          "منشورات العناصر",
+          "صور العناصر المرفوعة",
+          "الإعجابات",
+          "عمليات التخطي",
+          "المطابقات",
+          "رسائل المحادثة المرتبطة بحسابك",
+        ],
+        retentionTitle: "احتفاظ محدود ببعض البيانات",
+        retentionBody:
+          "قد يتم الاحتفاظ بقدر محدود من البيانات لفترة قصيرة إذا كان ذلك مطلوباً لأسباب أمنية أو لمنع الاحتيال أو للامتثال القانوني أو لأسباب النسخ الاحتياطي التقنية. تتم معالجة طلبات الحذف بأسرع وقت ممكن.",
       },
       terms: {
         badge: "قانوني",
