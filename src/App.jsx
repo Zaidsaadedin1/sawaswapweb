@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import Support from "./pages/Support";
 import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import Verified from "./pages/Verified";
 
 export default function App() {
@@ -16,11 +17,12 @@ export default function App() {
     <div dir={isArabic ? "rtl" : "ltr"} className="app">
       <Navbar />
 
-      <Routes>
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/support" element={<Support />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/auth/verified" element={<Verified />} />
       </Routes>
 

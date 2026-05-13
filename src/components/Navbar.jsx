@@ -40,6 +40,10 @@ export default function Navbar() {
                     {t("nav.terms")}
                 </NavLink>
 
+                <NavLink to="/privacy" onClick={() => setOpen(false)}>
+                    {t("nav.privacy")}
+                </NavLink>
+
                 <button className="langBtn" onClick={toggleLanguage}>
                     <Globe2 size={18} />
                     {i18n.language === "en" ? "العربية" : "English"}

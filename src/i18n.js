@@ -9,6 +9,7 @@ const resources = {
         about: "About",
         support: "Support",
         terms: "Terms",
+        privacy: "Privacy",
       },
       hero: {
         badge: "Swap • Buy • Sell Together",
@@ -121,6 +122,75 @@ const resources = {
           },
         ],
       },
+      privacy: {
+        badge: "Privacy",
+        title: "Privacy Policy",
+        updated: "Last updated: May 13, 2026",
+        intro:
+          "This Privacy Policy explains how SawaSwap collects, uses, stores, and shares personal data when you use our website, mobile app, and support channels. It is written to reflect the main features of SawaSwap, including account creation, item listings, matching, messaging, and support requests.",
+        sections: [
+          {
+            title: "1. Who this policy applies to",
+            body: "This policy applies to people who visit the SawaSwap website, create an account, browse or post listings, swipe or match with offers, send messages, or contact support. By using SawaSwap, you understand that some personal data is required for the service to work safely and correctly.",
+          },
+          {
+            title: "2. Information we collect",
+            body: "We may collect information you provide directly, such as your name, email address, phone number if requested in the app, profile details, city, item descriptions, images, pricing or swap preferences, account credentials, messages sent through the platform, and any information you include when contacting support. If you choose to create or update a listing with a photo, the app may access your camera so you can take pictures of items you want to trade, buy, or sell.",
+          },
+          {
+            title: "3. Information collected automatically",
+            body: "We may automatically collect technical and usage information such as device type, operating system, app version, browser type, language, IP address, approximate location derived from your network or selected city, log data, and actions taken in the app such as viewing listings, creating offers, matching, or reporting content.",
+          },
+          {
+            title: "4. How we use your information",
+            body: "We use personal data to create and manage accounts, display profiles and listings, enable matching and chat features, improve search and relevance, respond to support requests, send important service notices, detect abuse or fraud, enforce platform rules, maintain security, and improve the performance and reliability of SawaSwap. Camera access is used only to let users capture photos for item listings inside the app.",
+          },
+          {
+            title: "5. Listings, profiles, and chat visibility",
+            body: "Because SawaSwap is a marketplace service, some information is visible to other users as part of the product. This may include your profile name, city, item photos, item descriptions, offer details, and messages you choose to send to matched or contacted users. Please avoid sharing sensitive information in listings or chat unless it is necessary and you trust the recipient.",
+          },
+          {
+            title: "6. Legal and safety reasons for processing",
+            body: "We process information because it is necessary to provide the service you request, communicate with you, protect users, investigate abuse, comply with applicable legal obligations, and support our legitimate interest in running a secure item marketplace.",
+          },
+          {
+            title: "7. When we share information",
+            body: "We do not sell personal data. We may share information with service providers that support hosting, analytics, communications, moderation, security, or customer support, and with law enforcement or regulators when required by law or when reasonably necessary to protect users, resolve fraud, or enforce our terms.",
+          },
+          {
+            title: "8. Data retention",
+            body: "We keep personal data for as long as needed to operate your account, provide marketplace features, resolve disputes, investigate safety issues, comply with legal obligations, and maintain internal records. Some data may remain in backups or security logs for a limited period even after account deletion or content removal.",
+          },
+          {
+            title: "9. Your choices and rights",
+            body: "You may be able to update profile details, edit or remove listings, and stop using the service at any time. You can also contact us to request access, correction, deletion, or clarification regarding your personal data, subject to legal, security, and operational limits that may require us to keep certain records.",
+          },
+          {
+            title: "10. Security",
+            body: "We use reasonable technical and organizational measures to protect personal data, but no online service can guarantee absolute security. You are responsible for keeping your password secure, using trusted devices, and reporting suspected unauthorized access to your account.",
+          },
+          {
+            title: "11. Camera permission",
+            body: "SawaSwap requests camera permission so users can take photos of items they want to trade, buy, or sell. The camera is used only when you choose to capture a photo for a listing or related in-app flow, and it is not used for background recording.",
+          },
+          {
+            title: "12. Children's privacy",
+            body: "SawaSwap is not intended for children who are not legally allowed to use marketplace services in their jurisdiction. If we learn that personal data was provided by a child in violation of applicable rules, we may remove the account or related content.",
+          },
+          {
+            title: "13. International processing",
+            body: "SawaSwap may use service providers or technical infrastructure located in more than one country. By using the service, you understand that your information may be processed or stored in countries that have different data protection rules than your place of residence.",
+          },
+          {
+            title: "14. Updates to this Privacy Policy",
+            body: "We may update this Privacy Policy from time to time to reflect product changes, legal requirements, or security practices. The updated version will be posted on this page with a revised effective date.",
+          },
+          {
+            title: "15. Contact us",
+            body: "For privacy questions, requests, or complaints, contact SawaSwap at support@sawaswap.com. General product emails may also come from no-reply@sawaswap.com.",
+          },
+        ],
+      },
       footer: {
         text: "Good for you. Good for the community.",
       },
@@ -140,6 +210,7 @@ const resources = {
         about: "عن التطبيق",
         support: "الدعم",
         terms: "الشروط",
+        privacy: "الخصوصية",
       },
       hero: {
         badge: "بدّل • اشتري • بيع معاً",
@@ -247,6 +318,75 @@ const resources = {
           {
             title: "11. التواصل",
             body: "للدعم أو الأسئلة أو البلاغات، تواصل معنا عبر support@sawaswap.com.",
+          },
+        ],
+      },
+      privacy: {
+        badge: "الخصوصية",
+        title: "سياسة الخصوصية",
+        updated: "آخر تحديث: 13 مايو 2026",
+        intro:
+          "توضح سياسة الخصوصية هذه كيفية قيام SawaSwap بجمع البيانات الشخصية واستخدامها وتخزينها ومشاركتها عند استخدامك للموقع الإلكتروني أو التطبيق أو قنوات الدعم. تمت صياغة هذه السياسة بما يعكس الوظائف الرئيسية في SawaSwap مثل إنشاء الحسابات، نشر الأغراض، المطابقة، المحادثة، وطلبات الدعم.",
+        sections: [
+          {
+            title: "1. على من تنطبق هذه السياسة",
+            body: "تنطبق هذه السياسة على زوار موقع SawaSwap، والمستخدمين الذين ينشئون حساباً، أو يتصفحون المنشورات، أو ينشرون أغراضاً، أو يجرون المطابقة، أو يرسلون رسائل، أو يتواصلون مع الدعم. باستخدامك لـ SawaSwap فأنت تدرك أن بعض البيانات الشخصية مطلوبة ليعمل التطبيق بشكل آمن وصحيح.",
+          },
+          {
+            title: "2. المعلومات التي نجمعها",
+            body: "قد نجمع المعلومات التي تقدمها لنا مباشرة، مثل الاسم، البريد الإلكتروني، رقم الهاتف إذا كان مطلوباً داخل التطبيق، تفاصيل الملف الشخصي، المدينة، وصف الغرض، الصور، السعر أو تفضيلات التبديل، بيانات تسجيل الدخول، الرسائل المرسلة عبر المنصة، وأي معلومات ترسلها عند التواصل مع الدعم. وإذا اخترت إنشاء منشور أو تحديثه بصورة جديدة، فقد يطلب التطبيق الوصول إلى الكاميرا حتى تتمكن من التقاط صور للأغراض التي تريد تبديلها أو بيعها أو شراءها.",
+          },
+          {
+            title: "3. المعلومات التي يتم جمعها تلقائياً",
+            body: "قد نجمع تلقائياً معلومات تقنية ومعلومات استخدام مثل نوع الجهاز، نظام التشغيل، إصدار التطبيق، نوع المتصفح، اللغة، عنوان IP، الموقع التقريبي المستنتج من الشبكة أو من المدينة التي تختارها، بيانات السجل، والإجراءات التي تتم داخل التطبيق مثل مشاهدة المنشورات، إنشاء العروض، المطابقة، أو الإبلاغ عن المحتوى.",
+          },
+          {
+            title: "4. كيف نستخدم معلوماتك",
+            body: "نستخدم البيانات الشخصية لإنشاء الحسابات وإدارتها، عرض الملفات الشخصية والمنشورات، تشغيل ميزات المطابقة والمحادثة، تحسين البحث وملاءمة النتائج، الرد على طلبات الدعم، إرسال الإشعارات المهمة المتعلقة بالخدمة، اكتشاف إساءة الاستخدام أو الاحتيال، تطبيق قواعد المنصة، الحفاظ على الأمان، وتحسين أداء وموثوقية SawaSwap. ويُستخدم الوصول إلى الكاميرا فقط لتمكين المستخدم من التقاط صور للأغراض داخل التطبيق.",
+          },
+          {
+            title: "5. ظهور المنشورات والملفات الشخصية والمحادثات",
+            body: "بما أن SawaSwap خدمة سوق إلكتروني، فإن بعض المعلومات تظهر للمستخدمين الآخرين كجزء من الخدمة. قد يشمل ذلك اسم الملف الشخصي، المدينة، صور الأغراض، وصفها، تفاصيل العرض، والرسائل التي تختار إرسالها إلى المستخدمين الذين تمت مطابقتهم معك أو تواصلت معهم. يرجى تجنب مشاركة المعلومات الحساسة في المنشورات أو المحادثات إلا عند الضرورة ومع من تثق به.",
+          },
+          {
+            title: "6. الأساس التشغيلي والأمني لمعالجة البيانات",
+            body: "نعالج المعلومات لأن ذلك ضروري لتقديم الخدمة التي تطلبها، والتواصل معك، وحماية المستخدمين، والتحقيق في إساءة الاستخدام، والامتثال للالتزامات القانونية المعمول بها، ودعم مصلحتنا المشروعة في تشغيل سوق آمن لتبادل الأغراض.",
+          },
+          {
+            title: "7. متى نشارك المعلومات",
+            body: "نحن لا نبيع البيانات الشخصية. قد نشارك المعلومات مع مزودي الخدمات الذين يدعمون الاستضافة، التحليلات، الاتصالات، الإشراف، الأمان، أو خدمة العملاء، وكذلك مع الجهات الرسمية أو التنظيمية عندما يفرض القانون ذلك أو عندما يكون ضرورياً بشكل معقول لحماية المستخدمين أو معالجة الاحتيال أو تطبيق الشروط.",
+          },
+          {
+            title: "8. الاحتفاظ بالبيانات",
+            body: "نحتفظ بالبيانات الشخصية طالما كان ذلك ضرورياً لتشغيل حسابك، وتقديم ميزات السوق، وحل النزاعات، والتحقيق في مسائل السلامة، والامتثال للالتزامات القانونية، والاحتفاظ بالسجلات الداخلية. وقد تبقى بعض البيانات في النسخ الاحتياطية أو سجلات الأمان لفترة محدودة حتى بعد حذف الحساب أو إزالة المحتوى.",
+          },
+          {
+            title: "9. خياراتك وحقوقك",
+            body: "قد تتمكن من تحديث بيانات الملف الشخصي، وتعديل المنشورات أو حذفها، والتوقف عن استخدام الخدمة في أي وقت. ويمكنك أيضاً التواصل معنا لطلب الوصول إلى بياناتك الشخصية أو تصحيحها أو حذفها أو طلب توضيح بشأنها، وذلك مع مراعاة الحدود القانونية والأمنية والتشغيلية التي قد تلزمنا بالاحتفاظ ببعض السجلات.",
+          },
+          {
+            title: "10. الأمان",
+            body: "نستخدم تدابير تقنية وتنظيمية معقولة لحماية البيانات الشخصية، لكن لا توجد خدمة عبر الإنترنت تضمن أماناً مطلقاً. أنت مسؤول عن الحفاظ على سرية كلمة المرور، واستخدام أجهزة موثوقة، وإبلاغنا إذا اشتبهت في وصول غير مصرح به إلى حسابك.",
+          },
+          {
+            title: "11. إذن الكاميرا",
+            body: "يطلب SawaSwap إذن الكاميرا حتى يتمكن المستخدمون من التقاط صور للأغراض التي يريدون تبديلها أو شراءها أو بيعها. ولا يتم استخدام الكاميرا إلا عندما تختار التقاط صورة لمنشور أو ضمن تدفق مرتبط بذلك داخل التطبيق، ولا تُستخدم للتسجيل في الخلفية.",
+          },
+          {
+            title: "12. خصوصية الأطفال",
+            body: "SawaSwap غير مخصص للأطفال غير المسموح لهم قانونياً باستخدام خدمات الأسواق الإلكترونية في نطاقهم القانوني. وإذا علمنا أن بيانات شخصية قُدمت من طفل بما يخالف القواعد المعمول بها، فقد نقوم بإزالة الحساب أو المحتوى المرتبط به.",
+          },
+          {
+            title: "13. المعالجة الدولية للبيانات",
+            body: "قد يستخدم SawaSwap مزودي خدمات أو بنية تقنية موجودة في أكثر من دولة. باستخدامك للخدمة فأنت تدرك أن معلوماتك قد تتم معالجتها أو تخزينها في دول تختلف قواعد حماية البيانات فيها عن قواعد بلد إقامتك.",
+          },
+          {
+            title: "14. تحديثات سياسة الخصوصية",
+            body: "قد نقوم بتحديث سياسة الخصوصية هذه من وقت لآخر لتعكس تغييرات المنتج أو المتطلبات القانونية أو الممارسات الأمنية. سيتم نشر النسخة المحدثة على هذه الصفحة مع تاريخ نفاذ جديد.",
+          },
+          {
+            title: "15. التواصل معنا",
+            body: "للاستفسارات أو الطلبات أو الشكاوى المتعلقة بالخصوصية، تواصل مع SawaSwap عبر support@sawaswap.com. وقد تصلك رسائل عامة متعلقة بالخدمة أيضاً من no-reply@sawaswap.com.",
           },
         ],
       },
