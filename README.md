@@ -1,17 +1,24 @@
-# React + Vite
+# SawaSwap Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Local setup
 
-Currently, two official plugins are available:
+1. Copy `.env.example` to `.env`.
+2. Set `VITE_SUPABASE_URL`.
+3. Set `VITE_SUPABASE_ANON_KEY`.
+4. Run `npm install`.
+5. Run `npm run dev`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Supabase auth redirect setup
 
-## React Compiler
+This website now handles both email verification and password recovery on:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `https://www.sawaswap.com/auth/verified`
+- `http://localhost:5173/auth/verified`
 
-## Expanding the ESLint configuration
+Add both URLs to Supabase:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# sawaswapweb
+1. Supabase Dashboard -> Authentication -> URL Configuration.
+2. Add the two URLs above under Redirect URLs.
+3. Keep using `/auth/verified` as the `redirectTo` value when sending password reset emails from the app.
+
+When Supabase sends a recovery link with `type=recovery`, the page shows the reset-password form. For normal verification links, it still shows the verified screen.
