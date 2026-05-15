@@ -15,6 +15,17 @@ function normalizeSupabaseUrl(url) {
     return (url || "").replace(/\/rest\/v1\/?$/, "").replace(/\/$/, "");
 }
 
+function getSupabaseConfig() {
+    const url = normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL);
+    const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+    return {
+        url,
+        anonKey,
+        isConfigured: Boolean(url && anonKey),
+    };
+}
+
 function getAuthPageState() {
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
     const queryParams = new URLSearchParams(window.location.search);
@@ -24,9 +35,7 @@ function getAuthPageState() {
     return {
         mode: linkType === "recovery" ? "recovery" : "verified",
         accessToken: token,
-        isConfigured: Boolean(
-            import.meta.env.VITE_SUPABASE_URL && import.meta.env.VITE_SUPABASE_ANON_KEY,
-        ),
+        isConfigured: getSupabaseConfig().isConfigured,
     };
 }
 
@@ -76,12 +85,12 @@ export default function Verified() {
         setErrorMessage("");
 
         try {
-            const supabaseUrl = normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL);
-            const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
+            const supabaseConfig = getSupabaseConfig();
+            const response = await fetch(`${supabaseConfig.url}/auth/v1/user`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+                    apikey: supabaseConfig.anonKey,
                     Authorization: `Bearer ${accessToken}`,
                 },
                 body: JSON.stringify({ password }),
