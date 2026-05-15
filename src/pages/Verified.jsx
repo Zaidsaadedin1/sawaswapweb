@@ -11,6 +11,10 @@ import {
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+function normalizeSupabaseUrl(url) {
+    return (url || "").replace(/\/rest\/v1\/?$/, "").replace(/\/$/, "");
+}
+
 function getAuthPageState() {
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
     const queryParams = new URLSearchParams(window.location.search);
@@ -72,7 +76,8 @@ export default function Verified() {
         setErrorMessage("");
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/auth/v1/user`, {
+            const supabaseUrl = normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL);
+            const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
