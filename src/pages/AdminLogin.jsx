@@ -71,7 +71,13 @@ export default function AdminLogin() {
     setIsSubmitting(true);
 
     try {
-      await signIn(email, password);
+      const result = await signIn(email, password);
+
+      if (result?.profile?.is_admin) {
+        navigate(redirectTo, { replace: true });
+        return;
+      }
+
       setAwaitingAccessCheck(true);
     } catch (signInError) {
       setError(signInError.message || t("admin.login.signInError"));

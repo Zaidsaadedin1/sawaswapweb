@@ -20,6 +20,23 @@ async function fetchAdminProfile(supabase, userId) {
   return data;
 }
 
+async function resolveAdminState(supabase, nextSession) {
+  if (!nextSession?.user?.id) {
+    return { session: nextSession, profile: null, error: "" };
+  }
+
+  try {
+    const profile = await fetchAdminProfile(supabase, nextSession.user.id);
+    return { session: nextSession, profile, error: "" };
+  } catch (profileError) {
+    return {
+      session: nextSession,
+      profile: null,
+      error: profileError.message || "Failed to load admin profile.",
+    };
+  }
+}
+
 export function AdminAuthProvider({ children }) {
   const supabase = useMemo(() => getSupabaseClient(), []);
   const [session, setSession] = useState(null);
@@ -53,34 +70,16 @@ export function AdminAuthProvider({ children }) {
         return;
       }
 
-      setSession(currentSession);
+      const nextState = await resolveAdminState(supabase, currentSession);
 
-      if (!currentSession?.user?.id) {
-        setProfile(null);
-        setLoading(false);
+      if (!isActive) {
         return;
       }
 
-      try {
-        const adminProfile = await fetchAdminProfile(supabase, currentSession.user.id);
-
-        if (!isActive) {
-          return;
-        }
-
-        setProfile(adminProfile);
-      } catch (profileError) {
-        if (!isActive) {
-          return;
-        }
-
-        setProfile(null);
-        setError(profileError.message || "Failed to load admin profile.");
-      } finally {
-        if (isActive) {
-          setLoading(false);
-        }
-      }
+      setSession(nextState.session);
+      setProfile(nextState.profile);
+      setError(nextState.error);
+      setLoading(false);
     }
 
     loadSession();
@@ -92,37 +91,17 @@ export function AdminAuthProvider({ children }) {
         return;
       }
 
-      setSession(nextSession);
-      setError("");
+      setLoading(true);
+      const nextState = await resolveAdminState(supabase, nextSession);
 
-      if (!nextSession?.user?.id) {
-        setProfile(null);
-        setLoading(false);
+      if (!isActive) {
         return;
       }
 
-      setLoading(true);
-
-      try {
-        const adminProfile = await fetchAdminProfile(supabase, nextSession.user.id);
-
-        if (!isActive) {
-          return;
-        }
-
-        setProfile(adminProfile);
-      } catch (profileError) {
-        if (!isActive) {
-          return;
-        }
-
-        setProfile(null);
-        setError(profileError.message || "Failed to load admin profile.");
-      } finally {
-        if (isActive) {
-          setLoading(false);
-        }
-      }
+      setSession(nextState.session);
+      setProfile(nextState.profile);
+      setError(nextState.error);
+      setLoading(false);
     });
 
     return () => {
@@ -183,7 +162,16 @@ export function AdminAuthProvider({ children }) {
           throw signInError;
         }
 
-        return data;
+        setLoading(true);
+        setError("");
+
+        const nextState = await resolveAdminState(supabase, data.session);
+        setSession(nextState.session);
+        setProfile(nextState.profile);
+        setError(nextState.error);
+        setLoading(false);
+
+        return { ...data, profile: nextState.profile };
       },
       async signOut() {
         if (!supabase) {
