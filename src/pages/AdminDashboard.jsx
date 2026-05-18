@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Eye,
   Funnel,
-  Globe2,
   LogOut,
   Pencil,
   Plus,
@@ -14,6 +13,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { adminResources } from "../admin/resources";
+import TopBar from "../components/TopBar";
 import { useAdminAuth } from "../context/useAdminAuth";
 
 function toInputValue(value, type) {
@@ -721,7 +721,7 @@ function AdminResourcePanel({ resource, supabase }) {
 }
 
 export default function AdminDashboard() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { profile, signOut, supabase } = useAdminAuth();
   const [activeTable, setActiveTable] = useState(adminResources[0].table);
   const [signOutError, setSignOutError] = useState("");
@@ -743,63 +743,56 @@ export default function AdminDashboard() {
     }
   }
 
-  function toggleLanguage() {
-    i18n.changeLanguage(i18n.language === "en" ? "ar" : "en");
-  }
-
   return (
-    <main className="adminShell adminDashboardShell">
-      <aside className="adminSidebar">
-        <div className="adminBrand">
-          <div className="adminBrandIcon">
-            <ShieldCheck size={20} />
+    <div className="adminShellWithTopBar">
+      <TopBar />
+
+      <main className="adminShell adminDashboardShell">
+        <aside className="adminSidebar">
+          <div className="adminBrand">
+            <div className="adminBrandIcon">
+              <ShieldCheck size={20} />
+            </div>
+            <div>
+              <strong>{t("admin.dashboard.brand")}</strong>
+              <p>{profile?.full_name || profile?.username || profile?.id}</p>
+            </div>
           </div>
-          <div>
-            <strong>{t("admin.dashboard.brand")}</strong>
-            <p>{profile?.full_name || profile?.username || profile?.id}</p>
+
+          <nav className="adminNav">
+            {adminResources.map((resource) => (
+              <button
+                key={resource.table}
+                className={resource.table === activeTable ? "adminNavItem active" : "adminNavItem"}
+                type="button"
+                onClick={() => setActiveTable(resource.table)}
+              >
+                <span>{getResourceLabel(t, resource)}</span>
+                <small>{resource.table}</small>
+              </button>
+            ))}
+          </nav>
+
+          {signOutError ? <div className="adminAlert adminAlertError">{signOutError}</div> : null}
+
+          <button className="adminSecondaryBtn adminSignOutBtn" type="button" onClick={handleSignOut}>
+            <LogOut size={16} />
+            {t("admin.actions.signOut")}
+          </button>
+        </aside>
+
+        <section className="adminContent">
+          <div className="adminHero">
+            <div>
+              <p className="adminOverline">{t("admin.dashboard.badge")}</p>
+              <h1>{t("admin.dashboard.title")}</h1>
+              <p>{t("admin.dashboard.text")}</p>
+            </div>
           </div>
-        </div>
 
-        <nav className="adminNav">
-          {adminResources.map((resource) => (
-            <button
-              key={resource.table}
-              className={resource.table === activeTable ? "adminNavItem active" : "adminNavItem"}
-              type="button"
-              onClick={() => setActiveTable(resource.table)}
-            >
-              <span>{getResourceLabel(t, resource)}</span>
-              <small>{resource.table}</small>
-            </button>
-          ))}
-        </nav>
-
-        {signOutError ? <div className="adminAlert adminAlertError">{signOutError}</div> : null}
-
-        <button className="adminSecondaryBtn adminLangBtn" type="button" onClick={toggleLanguage}>
-          <Globe2 size={16} />
-          {i18n.language === "en"
-            ? t("admin.actions.switchToArabic")
-            : t("admin.actions.switchToEnglish")}
-        </button>
-
-        <button className="adminSecondaryBtn adminSignOutBtn" type="button" onClick={handleSignOut}>
-          <LogOut size={16} />
-          {t("admin.actions.signOut")}
-        </button>
-      </aside>
-
-      <section className="adminContent">
-        <div className="adminHero">
-          <div>
-            <p className="adminOverline">{t("admin.dashboard.badge")}</p>
-            <h1>{t("admin.dashboard.title")}</h1>
-            <p>{t("admin.dashboard.text")}</p>
-          </div>
-        </div>
-
-        <AdminResourcePanel key={activeResource.table} resource={activeResource} supabase={supabase} />
-      </section>
-    </main>
+          <AdminResourcePanel key={activeResource.table} resource={activeResource} supabase={supabase} />
+        </section>
+      </main>
+    </div>
   );
 }

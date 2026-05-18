@@ -15,6 +15,7 @@ export default function Footer() {
             </div>
 
             <div className="footerLinks">
+                <Link to="/items">{t("nav.items")}</Link>
                 <Link to="/how-it-works">{t("nav.howItWorks")}</Link>
                 <Link to="/about">{t("nav.about")}</Link>
                 <Link to="/support">{t("nav.support")}</Link>

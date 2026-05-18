@@ -27,6 +27,10 @@ export default function DeleteAccount() {
         </div>
 
         <div className="deleteCard">
+          <div className="deleteInfoNote">
+            <p>{t("deleteAccount.inAppOption")}</p>
+          </div>
+
           <p>{t("deleteAccount.emailInstruction")}</p>
 
           <a className="deleteMailLink" href="mailto:support@sawaswap.com?subject=Delete%20my%20SawaSwap%20account">
