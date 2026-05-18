@@ -10,21 +10,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
-function normalizeSupabaseUrl(url) {
-    return (url || "").replace(/\/rest\/v1\/?$/, "").replace(/\/$/, "");
-}
-
-function getSupabaseConfig() {
-    const url = normalizeSupabaseUrl(import.meta.env.VITE_SUPABASE_URL);
-    const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-    return {
-        url,
-        anonKey,
-        isConfigured: Boolean(url && anonKey),
-    };
-}
+import { getSupabaseConfig } from "../lib/supabase";
 
 function getAuthPageState() {
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
