@@ -20,6 +20,15 @@ async function fetchAdminProfile(supabase, userId) {
   return data;
 }
 
+function withTimeout(promise, timeoutMs, message) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      window.setTimeout(() => reject(new Error(message)), timeoutMs);
+    }),
+  ]);
+}
+
 export function AdminAuthProvider({ children }) {
   const supabase = useMemo(() => getSupabaseClient(), []);
   const [session, setSession] = useState(null);
@@ -145,14 +154,20 @@ export function AdminAuthProvider({ children }) {
           throw new Error("Supabase is not configured.");
         }
 
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+        const { data, error: signInError } = await withTimeout(
+          supabase.auth.signInWithPassword({
+            email,
+            password,
+          }),
+          15000,
+          "Login request timed out. Check your connection and Supabase auth settings."
+        );
 
         if (signInError) {
           throw signInError;
         }
+
+        return data;
       },
       async signOut() {
         if (!supabase) {

@@ -1485,6 +1485,11 @@ button {
   margin-top: 18px;
 }
 
+.adminLangBtn {
+  width: 100%;
+  margin-top: 18px;
+}
+
 .adminContent {
   display: grid;
   gap: 24px;
@@ -1563,6 +1568,7 @@ button {
 .adminTableWrap {
   overflow: auto;
   margin-top: 22px;
+  max-height: 70vh;
   border: 1px solid rgba(229, 231, 235, 0.95);
   border-radius: 24px;
 }
@@ -1582,6 +1588,9 @@ button {
 }
 
 .adminTable th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1646,6 +1655,12 @@ button {
 .adminDrawerHeader h3 {
   margin: 6px 0 0;
   font-size: 28px;
+}
+
+.adminDrawerCloseRow {
+  margin-bottom: 18px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .adminCodeBlock {

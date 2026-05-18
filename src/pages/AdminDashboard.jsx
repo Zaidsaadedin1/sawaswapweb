@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Eye,
   Funnel,
+  Globe2,
   LogOut,
   Pencil,
   Plus,
@@ -88,6 +89,8 @@ function getFieldLabel(t, resource, fieldName) {
 }
 
 function DrawerShell({ title, subtitle, children, onClose }) {
+  const { t } = useTranslation();
+
   return (
     <div className="adminDrawerBackdrop" onClick={onClose}>
       <aside className="adminDrawer" onClick={(event) => event.stopPropagation()}>
@@ -102,6 +105,12 @@ function DrawerShell({ title, subtitle, children, onClose }) {
           </button>
         </div>
 
+        <div className="adminDrawerCloseRow">
+          <button className="adminSecondaryBtn" type="button" onClick={onClose}>
+            {t("admin.actions.close")}
+          </button>
+        </div>
+
         {children}
       </aside>
     </div>
@@ -113,11 +122,14 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
   const [formState, setFormState] = useState(() => buildInitialForm(resource, record));
   const [error, setError] = useState("");
   const resourceLabel = getResourceLabel(t, resource);
+  const isViewMode = mode === "view";
 
   const title =
     mode === "create"
       ? t("admin.drawer.addTitle", { resource: resourceLabel })
-      : t("admin.drawer.editTitle", { resource: resourceLabel });
+      : isViewMode
+        ? t("admin.drawer.viewTitle", { resource: resourceLabel })
+        : t("admin.drawer.editTitle", { resource: resourceLabel });
 
   function updateField(fieldName, nextValue) {
     setFormState((current) => ({
@@ -134,7 +146,7 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
       const payload = {};
 
       Object.entries(resource.fields).forEach(([fieldName, fieldConfig]) => {
-        if (fieldConfig.readOnly) {
+        if (fieldConfig.readOnly || isViewMode) {
           return;
         }
 
@@ -153,68 +165,69 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
 
   return (
     <DrawerShell title={title} subtitle={resource.table} onClose={onClose}>
-        {error ? <div className="adminAlert adminAlertError">{error}</div> : null}
+      {error ? <div className="adminAlert adminAlertError">{error}</div> : null}
 
-        <form className="adminFormGrid" onSubmit={handleSubmit}>
-          {Object.entries(resource.fields).map(([fieldName, fieldConfig]) => {
-            const value = formState[fieldName];
-            const readOnly = fieldConfig.readOnly;
+      <form className="adminFormGrid" onSubmit={handleSubmit}>
+        {Object.entries(resource.fields).map(([fieldName, fieldConfig]) => {
+          const value = formState[fieldName];
+          const readOnly = fieldConfig.readOnly || isViewMode;
 
-            return (
-              <label className="adminField" key={fieldName}>
-                <span>{getFieldLabel(t, resource, fieldName)}</span>
+          return (
+            <label className="adminField" key={fieldName}>
+              <span>{getFieldLabel(t, resource, fieldName)}</span>
 
-                {fieldConfig.type === "textarea" || fieldConfig.type === "json" ? (
-                  <textarea
-                    value={value}
-                    onChange={(event) => updateField(fieldName, event.target.value)}
-                    placeholder={getFieldLabel(t, resource, fieldName)}
-                    readOnly={readOnly}
-                    required={fieldConfig.required}
-                    rows={fieldConfig.type === "json" ? 7 : 4}
-                  />
-                ) : null}
+              {fieldConfig.type === "textarea" || fieldConfig.type === "json" ? (
+                <textarea
+                  value={value}
+                  onChange={(event) => updateField(fieldName, event.target.value)}
+                  placeholder={getFieldLabel(t, resource, fieldName)}
+                  readOnly={readOnly}
+                  required={fieldConfig.required}
+                  rows={fieldConfig.type === "json" ? 7 : 4}
+                />
+              ) : null}
 
-                {fieldConfig.type === "boolean" ? (
-                  <input
-                    type="checkbox"
-                    checked={Boolean(value)}
-                    onChange={(event) => updateField(fieldName, event.target.checked)}
-                    disabled={readOnly}
-                  />
-                ) : null}
+              {fieldConfig.type === "boolean" ? (
+                <input
+                  type="checkbox"
+                  checked={Boolean(value)}
+                  onChange={(event) => updateField(fieldName, event.target.checked)}
+                  disabled={readOnly}
+                />
+              ) : null}
 
-                {fieldConfig.type === "select" ? (
-                  <select
-                    value={value}
-                    onChange={(event) => updateField(fieldName, event.target.value)}
-                    disabled={readOnly}
-                    required={fieldConfig.required}
-                  >
-                    <option value="">{t("admin.form.select")}</option>
-                    {fieldConfig.options.map((option) => (
-                      <option key={option} value={option}>
-                        {t(`admin.options.${option}`, { defaultValue: option })}
-                      </option>
-                    ))}
-                  </select>
-                ) : null}
+              {fieldConfig.type === "select" ? (
+                <select
+                  value={value}
+                  onChange={(event) => updateField(fieldName, event.target.value)}
+                  disabled={readOnly}
+                  required={fieldConfig.required}
+                >
+                  <option value="">{t("admin.form.select")}</option>
+                  {fieldConfig.options.map((option) => (
+                    <option key={option} value={option}>
+                      {t(`admin.options.${option}`, { defaultValue: option })}
+                    </option>
+                  ))}
+                </select>
+              ) : null}
 
-                {!["textarea", "json", "boolean", "select"].includes(fieldConfig.type) ? (
-                  <input
-                    type={fieldConfig.type || "text"}
-                    value={value}
-                    onChange={(event) => updateField(fieldName, event.target.value)}
-                    placeholder={getFieldLabel(t, resource, fieldName)}
-                    readOnly={readOnly}
-                    required={fieldConfig.required}
-                    step={fieldConfig.step}
-                  />
-                ) : null}
-              </label>
-            );
-          })}
+              {!["textarea", "json", "boolean", "select"].includes(fieldConfig.type) ? (
+                <input
+                  type={fieldConfig.type || "text"}
+                  value={value}
+                  onChange={(event) => updateField(fieldName, event.target.value)}
+                  placeholder={getFieldLabel(t, resource, fieldName)}
+                  readOnly={readOnly}
+                  required={fieldConfig.required}
+                  step={fieldConfig.step}
+                />
+              ) : null}
+            </label>
+          );
+        })}
 
+        {!isViewMode ? (
           <div className="adminModalActions">
             <button className="adminSecondaryBtn" type="button" onClick={onClose}>
               {t("admin.actions.cancel")}
@@ -223,21 +236,8 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
               {busy ? t("admin.actions.saving") : t("admin.actions.save")}
             </button>
           </div>
-        </form>
-    </DrawerShell>
-  );
-}
-
-function RecordViewDrawer({ resource, record, onClose }) {
-  const { t } = useTranslation();
-
-  return (
-    <DrawerShell
-      title={t("admin.drawer.viewTitle", { resource: getResourceLabel(t, resource) })}
-      subtitle={resource.table}
-      onClose={onClose}
-    >
-        <pre className="adminCodeBlock">{JSON.stringify(record, null, 2)}</pre>
+        ) : null}
+      </form>
     </DrawerShell>
   );
 }
@@ -551,10 +551,14 @@ function AdminResourcePanel({ resource, supabase }) {
       ) : null}
 
       {viewRecord ? (
-        <RecordViewDrawer
+        <ResourceFormDrawer
+          key={`${resource.table}-view-${viewRecord[resource.primaryKey]}`}
           resource={resource}
+          mode="view"
           record={viewRecord}
           onClose={() => setViewRecord(null)}
+          onSubmit={async () => {}}
+          busy={false}
         />
       ) : null}
     </section>
@@ -562,7 +566,7 @@ function AdminResourcePanel({ resource, supabase }) {
 }
 
 export default function AdminDashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { profile, signOut, supabase } = useAdminAuth();
   const [activeTable, setActiveTable] = useState(adminResources[0].table);
   const [signOutError, setSignOutError] = useState("");
@@ -582,6 +586,10 @@ export default function AdminDashboard() {
     } catch (error) {
       setSignOutError(error.message || t("admin.messages.signOutError"));
     }
+  }
+
+  function toggleLanguage() {
+    i18n.changeLanguage(i18n.language === "en" ? "ar" : "en");
   }
 
   return (
@@ -612,6 +620,13 @@ export default function AdminDashboard() {
         </nav>
 
         {signOutError ? <div className="adminAlert adminAlertError">{signOutError}</div> : null}
+
+        <button className="adminSecondaryBtn adminLangBtn" type="button" onClick={toggleLanguage}>
+          <Globe2 size={16} />
+          {i18n.language === "en"
+            ? t("admin.actions.switchToArabic")
+            : t("admin.actions.switchToEnglish")}
+        </button>
 
         <button className="adminSecondaryBtn adminSignOutBtn" type="button" onClick={handleSignOut}>
           <LogOut size={16} />
