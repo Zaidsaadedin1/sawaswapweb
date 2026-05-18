@@ -85,6 +85,7 @@ export const adminResources = [
     label: "Items",
     primaryKey: "id",
     defaultSort: { column: "created_at", ascending: false },
+    previewColumns: ["title", "owner_id", "status", "accepted", "review_reason_id", "created_at"],
     fields: baseFields({
       id: { ...UUID_FIELD, readOnly: true },
       owner_id: { type: "text", required: true },
@@ -114,6 +115,36 @@ export const adminResources = [
         type: "select",
         options: ["trade", "sell", "buy"],
         required: true,
+      },
+      moderation_status: {
+        type: "select",
+        options: ["pending", "accepted", "rejected"],
+        getInitialValue: (record) => {
+          if (record?.accepted === true) {
+            return "accepted";
+          }
+
+          if (record?.accepted === false) {
+            return "rejected";
+          }
+
+          return "pending";
+        },
+        virtual: true,
+      },
+      accepted: { type: "boolean", readOnly: true, hideInForm: true },
+      review_reason_id: {
+        type: "select",
+        optionsSource: {
+          table: "item_review_reasons",
+          orderBy: { column: "created_at", ascending: true },
+          mapOption: (row) => ({
+            value: row.id,
+            label: row.code || row.name_en || row.name || row.label || row.id,
+          }),
+        },
+        showWhen: (formState) => formState.moderation_status === "rejected",
+        requiredWhen: (formState) => formState.moderation_status === "rejected",
       },
     }),
   },

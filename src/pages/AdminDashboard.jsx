@@ -71,9 +71,31 @@ function buildInitialForm(resource, record = null) {
   return Object.fromEntries(
     Object.entries(resource.fields).map(([fieldName, fieldConfig]) => [
       fieldName,
-      toInputValue(record?.[fieldName], fieldConfig.type),
+      fieldConfig.getInitialValue
+        ? fieldConfig.getInitialValue(record)
+        : toInputValue(record?.[fieldName], fieldConfig.type),
     ])
   );
+}
+
+function isFieldVisible(fieldConfig, formState) {
+  if (fieldConfig.hideInForm) {
+    return false;
+  }
+
+  if (!fieldConfig.showWhen) {
+    return true;
+  }
+
+  return Boolean(fieldConfig.showWhen(formState));
+}
+
+function isFieldRequired(fieldConfig, formState) {
+  if (fieldConfig.requiredWhen) {
+    return Boolean(fieldConfig.requiredWhen(formState));
+  }
+
+  return Boolean(fieldConfig.required);
 }
 
 function getResourceLabel(t, resource) {
@@ -117,10 +139,11 @@ function DrawerShell({ title, subtitle, children, onClose }) {
   );
 }
 
-function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy }) {
+function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy, supabase }) {
   const { t } = useTranslation();
   const [formState, setFormState] = useState(() => buildInitialForm(resource, record));
   const [error, setError] = useState("");
+  const [selectOptions, setSelectOptions] = useState({});
   const resourceLabel = getResourceLabel(t, resource);
   const isViewMode = mode === "view";
 
@@ -138,6 +161,59 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
     }));
   }
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSelectOptions() {
+      const fieldsWithRemoteOptions = Object.entries(resource.fields).filter(
+        ([, fieldConfig]) => fieldConfig.optionsSource
+      );
+
+      if (fieldsWithRemoteOptions.length === 0) {
+        setSelectOptions({});
+        return;
+      }
+
+      const optionEntries = await Promise.all(
+        fieldsWithRemoteOptions.map(async ([fieldName, fieldConfig]) => {
+          const { table, orderBy, mapOption } = fieldConfig.optionsSource;
+          let query = supabase.from(table).select("*");
+
+          if (orderBy?.column) {
+            query = query.order(orderBy.column, { ascending: orderBy.ascending ?? true });
+          }
+
+          const { data, error: optionsError } = await query.limit(200);
+
+          if (optionsError) {
+            throw optionsError;
+          }
+
+          return [
+            fieldName,
+            (data || []).map((row) =>
+              mapOption ? mapOption(row) : { value: row.id, label: row.name || row.id }
+            ),
+          ];
+        })
+      );
+
+      if (!cancelled) {
+        setSelectOptions(Object.fromEntries(optionEntries));
+      }
+    }
+
+    loadSelectOptions().catch((loadError) => {
+      if (!cancelled) {
+        setError(loadError.message || t("admin.messages.loadError", { resource: resourceLabel }));
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [resource, resourceLabel, supabase, t]);
+
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
@@ -146,7 +222,7 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
       const payload = {};
 
       Object.entries(resource.fields).forEach(([fieldName, fieldConfig]) => {
-        if (fieldConfig.readOnly || isViewMode) {
+        if (fieldConfig.readOnly || isViewMode || !isFieldVisible(fieldConfig, formState)) {
           return;
         }
 
@@ -154,10 +230,22 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
           return;
         }
 
+        if (fieldConfig.virtual) {
+          return;
+        }
+
+        if (isFieldRequired(fieldConfig, formState) && formState[fieldName] === "") {
+          throw new Error(
+            t("admin.messages.requiredField", {
+              field: getFieldLabel(t, resource, fieldName),
+            })
+          );
+        }
+
         payload[fieldName] = parseInputValue(formState[fieldName], fieldConfig.type);
       });
 
-      await onSubmit(payload);
+      await onSubmit(payload, formState);
     } catch (submitError) {
       setError(submitError.message || t("admin.messages.saveError"));
     }
@@ -169,8 +257,14 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
 
       <form className="adminFormGrid" onSubmit={handleSubmit}>
         {Object.entries(resource.fields).map(([fieldName, fieldConfig]) => {
+          if (!isFieldVisible(fieldConfig, formState)) {
+            return null;
+          }
+
           const value = formState[fieldName];
           const readOnly = fieldConfig.readOnly || isViewMode;
+          const required = isFieldRequired(fieldConfig, formState);
+          const options = fieldConfig.optionsSource ? selectOptions[fieldName] || [] : fieldConfig.options || [];
 
           return (
             <label className="adminField" key={fieldName}>
@@ -182,7 +276,7 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
                   onChange={(event) => updateField(fieldName, event.target.value)}
                   placeholder={getFieldLabel(t, resource, fieldName)}
                   readOnly={readOnly}
-                  required={fieldConfig.required}
+                  required={required}
                   rows={fieldConfig.type === "json" ? 7 : 4}
                 />
               ) : null}
@@ -201,12 +295,17 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
                   value={value}
                   onChange={(event) => updateField(fieldName, event.target.value)}
                   disabled={readOnly}
-                  required={fieldConfig.required}
+                  required={required}
                 >
                   <option value="">{t("admin.form.select")}</option>
-                  {fieldConfig.options.map((option) => (
-                    <option key={option} value={option}>
-                      {t(`admin.options.${option}`, { defaultValue: option })}
+                  {options.map((option) => (
+                    <option
+                      key={typeof option === "string" ? option : option.value}
+                      value={typeof option === "string" ? option : option.value}
+                    >
+                      {typeof option === "string"
+                        ? t(`admin.options.${option}`, { defaultValue: option })
+                        : option.label}
                     </option>
                   ))}
                 </select>
@@ -219,7 +318,7 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy })
                   onChange={(event) => updateField(fieldName, event.target.value)}
                   placeholder={getFieldLabel(t, resource, fieldName)}
                   readOnly={readOnly}
-                  required={fieldConfig.required}
+                  required={required}
                   step={fieldConfig.step}
                 />
               ) : null}
@@ -274,6 +373,38 @@ function withTradeOfferReviewFields(resource, payload) {
     ...payload,
     admin_reviewed_at: null,
   };
+}
+
+function withItemModerationFields(resource, payload, formState) {
+  if (resource.table !== "items") {
+    return payload;
+  }
+
+  if (formState.moderation_status === "accepted") {
+    return {
+      ...payload,
+      accepted: true,
+      review_reason_id: null,
+    };
+  }
+
+  if (formState.moderation_status === "rejected") {
+    return {
+      ...payload,
+      accepted: false,
+    };
+  }
+
+  return {
+    ...payload,
+    accepted: null,
+    review_reason_id: null,
+  };
+}
+
+function normalizePayload(resource, payload, formState) {
+  const withTradeOfferFields = withTradeOfferReviewFields(resource, payload);
+  return withItemModerationFields(resource, withTradeOfferFields, formState);
 }
 
 function AdminResourcePanel({ resource, supabase }) {
@@ -331,11 +462,11 @@ function AdminResourcePanel({ resource, supabase }) {
     queueMicrotask(loadRows);
   }, [loadRows]);
 
-  async function handleCreate(payload) {
+  async function handleCreate(payload, formState) {
     setBusy(true);
 
     try {
-      const normalizedPayload = withTradeOfferReviewFields(resource, payload);
+      const normalizedPayload = normalizePayload(resource, payload, formState);
       const { error: insertError } = await supabase.from(resource.table).insert(normalizedPayload);
 
       if (insertError) {
@@ -349,11 +480,11 @@ function AdminResourcePanel({ resource, supabase }) {
     }
   }
 
-  async function handleUpdate(payload) {
+  async function handleUpdate(payload, formState) {
     setBusy(true);
 
     try {
-      const normalizedPayload = withTradeOfferReviewFields(resource, payload);
+      const normalizedPayload = normalizePayload(resource, payload, formState);
       const { error: updateError } = await supabase
         .from(resource.table)
         .update(normalizedPayload)
@@ -535,6 +666,7 @@ function AdminResourcePanel({ resource, supabase }) {
           onClose={() => setIsCreating(false)}
           onSubmit={handleCreate}
           busy={busy}
+          supabase={supabase}
         />
       ) : null}
 
@@ -547,6 +679,7 @@ function AdminResourcePanel({ resource, supabase }) {
           onClose={() => setEditingRecord(null)}
           onSubmit={handleUpdate}
           busy={busy}
+          supabase={supabase}
         />
       ) : null}
 
@@ -559,6 +692,7 @@ function AdminResourcePanel({ resource, supabase }) {
           onClose={() => setViewRecord(null)}
           onSubmit={async () => {}}
           busy={false}
+          supabase={supabase}
         />
       ) : null}
     </section>
