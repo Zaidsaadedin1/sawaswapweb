@@ -2,7 +2,7 @@
 
 ## Local setup
 
-1. Copy `.env.example` to `.env`.
+1. Create a `.env` file.
 2. Set `VITE_SUPABASE_URL`.
 3. Set `VITE_SUPABASE_ANON_KEY`.
 4. Run `npm install`.
