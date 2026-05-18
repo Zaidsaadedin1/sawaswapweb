@@ -8,42 +8,17 @@ export default function AdminLogin() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn, signOut, isAdmin, user, loading, error: authError, supabase } = useAdminAuth();
+  const { signIn, isAdmin, user, loading, error: authError, supabase } = useAdminAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [awaitingAccessCheck, setAwaitingAccessCheck] = useState(false);
 
   const redirectTo = location.state?.from?.pathname || "/admin/dashboard";
 
   useEffect(() => {
     document.title = `${t("admin.login.pageTitle")} | SawaSwap`;
   }, [t]);
-
-  useEffect(() => {
-    if (!awaitingAccessCheck || loading) {
-      return;
-    }
-
-    if (user && isAdmin) {
-      navigate(redirectTo, { replace: true });
-      return;
-    }
-
-    if (user && !isAdmin) {
-      signOut().catch(() => {});
-    }
-  }, [awaitingAccessCheck, isAdmin, loading, navigate, redirectTo, signOut, t, user]);
-
-  const accessCheckError =
-    awaitingAccessCheck && !loading
-      ? user
-        ? isAdmin
-          ? ""
-          : t("admin.login.notAdminError")
-        : t("admin.login.accessCheckError")
-      : "";
 
   if (!supabase) {
     return (
@@ -67,18 +42,16 @@ export default function AdminLogin() {
   async function handleSubmit(event) {
     event.preventDefault();
     setError("");
-    setAwaitingAccessCheck(false);
     setIsSubmitting(true);
 
     try {
       const result = await signIn(email, password);
-
-      if (result?.profile?.is_admin) {
+      if (result?.session?.user?.id) {
         navigate(redirectTo, { replace: true });
         return;
       }
 
-      setAwaitingAccessCheck(true);
+      throw new Error(t("admin.login.accessCheckError"));
     } catch (signInError) {
       setError(signInError.message || t("admin.login.signInError"));
     } finally {
@@ -98,7 +71,6 @@ export default function AdminLogin() {
 
         {authError ? <div className="adminAlert adminAlertError">{authError}</div> : null}
         {error ? <div className="adminAlert adminAlertError">{error}</div> : null}
-        {accessCheckError ? <div className="adminAlert adminAlertError">{accessCheckError}</div> : null}
 
         <form className="adminAuthForm" onSubmit={handleSubmit}>
           <label className="adminField">
@@ -128,11 +100,9 @@ export default function AdminLogin() {
           <button
             className="adminPrimaryBtn"
             type="submit"
-            disabled={isSubmitting || (awaitingAccessCheck && loading)}
+            disabled={isSubmitting}
           >
-            {isSubmitting || awaitingAccessCheck
-              ? t("admin.login.signingIn")
-              : t("admin.login.submit")}
+            {isSubmitting ? t("admin.login.signingIn") : t("admin.login.submit")}
           </button>
         </form>
       </section>
