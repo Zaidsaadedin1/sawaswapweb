@@ -150,17 +150,34 @@ export function AdminAuthProvider({ children }) {
           password,
         });
 
-        const timeoutPromise = new Promise((_, reject) => {
+        const timeoutPromise = new Promise((resolve) => {
           window.setTimeout(() => {
-            reject(
-              new Error(
-                "Browser could not complete the Supabase login request. Check ad blockers, VPN, firewall, or browser privacy/network settings."
-              )
-            );
+            resolve({ timedOut: true });
           }, 30000);
         });
 
-        const { data, error: signInError } = await Promise.race([signInPromise, timeoutPromise]);
+        const result = await Promise.race([signInPromise, timeoutPromise]);
+
+        if (result?.timedOut) {
+          const {
+            data: { session: fallbackSession },
+            error: fallbackError,
+          } = await supabase.auth.getSession();
+
+          if (fallbackError) {
+            throw fallbackError;
+          }
+
+          if (fallbackSession?.user?.id) {
+            return { session: fallbackSession, timedOut: true };
+          }
+
+          throw new Error(
+            "Login request took too long and no authenticated session was found."
+          );
+        }
+
+        const { data, error: signInError } = result;
 
         if (signInError) {
           throw signInError;
