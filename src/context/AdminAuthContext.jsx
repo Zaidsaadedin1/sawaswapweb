@@ -148,7 +148,16 @@ export function AdminAuthProvider({ children }) {
           }
 
           if (fallbackSession?.user?.id) {
-            return { session: fallbackSession, timedOut: true };
+            setLoading(true);
+            setError("");
+
+            const nextState = await resolveAdminState(supabase, fallbackSession);
+            setSession(nextState.session);
+            setProfile(nextState.profile);
+            setError(nextState.error);
+            setLoading(false);
+
+            return { session: fallbackSession, timedOut: true, profile: nextState.profile };
           }
 
           throw new Error(

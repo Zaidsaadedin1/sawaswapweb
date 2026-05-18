@@ -1,5 +1,13 @@
 const TIMESTAMP_FIELD = { type: "datetime-local" };
 const UUID_FIELD = { type: "text" };
+const ITEM_REVIEW_REASON_CODES = [
+  "missing_details",
+  "inappropriate_content",
+  "prohibited_item",
+  "duplicate_listing",
+  "spam",
+  "other",
+];
 
 function baseFields(fields) {
   return {
@@ -133,16 +141,12 @@ export const adminResources = [
         virtual: true,
       },
       accepted: { type: "boolean", readOnly: true, hideInForm: true },
-      review_reason_id: {
+      review_reason_id: { type: "text", readOnly: true, hideInForm: true },
+      review_reason_code: {
         type: "select",
-        optionsSource: {
-          table: "item_review_reasons",
-          orderBy: { column: "created_at", ascending: true },
-          mapOption: (row) => ({
-            value: row.id,
-            label: row.code || row.name_en || row.name || row.label || row.id,
-          }),
-        },
+        options: ITEM_REVIEW_REASON_CODES,
+        getInitialValue: () => "",
+        virtual: true,
         showWhen: (formState) => formState.moderation_status === "rejected",
         requiredWhen: (formState) => formState.moderation_status === "rejected",
       },

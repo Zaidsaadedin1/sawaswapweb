@@ -8,7 +8,7 @@ export default function AdminLogin() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { signIn, isAdmin, user, loading, error: authError, supabase } = useAdminAuth();
+  const { signIn, user, loading, error: authError, supabase } = useAdminAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,6 +19,12 @@ export default function AdminLogin() {
   useEffect(() => {
     document.title = `${t("admin.login.pageTitle")} | SawaSwap`;
   }, [t]);
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate(redirectTo, { replace: true });
+    }
+  }, [loading, navigate, redirectTo, user]);
 
   if (!supabase) {
     return (
@@ -35,7 +41,7 @@ export default function AdminLogin() {
     );
   }
 
-  if (!loading && user && isAdmin) {
+  if (!loading && user) {
     return <Navigate to={redirectTo} replace />;
   }
 
@@ -45,9 +51,10 @@ export default function AdminLogin() {
     setIsSubmitting(true);
 
     try {
+      console.log("Attempting sign-in with email:", email);
       const result = await signIn(email, password);
+      console.log("Sign-in result:", result);
       if (result?.session?.user?.id) {
-        navigate(redirectTo, { replace: true });
         return;
       }
 

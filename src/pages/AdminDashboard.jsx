@@ -375,7 +375,7 @@ function withTradeOfferReviewFields(resource, payload) {
   };
 }
 
-function withItemModerationFields(resource, payload, formState) {
+async function withItemModerationFields(resource, payload, formState, supabase) {
   if (resource.table !== "items") {
     return payload;
   }
@@ -389,9 +389,30 @@ function withItemModerationFields(resource, payload, formState) {
   }
 
   if (formState.moderation_status === "rejected") {
+    const selectedReasonCode = formState.review_reason_code;
+
+    if (!selectedReasonCode) {
+      throw new Error("Review reason is required.");
+    }
+
+    const { data: reviewReason, error: reviewReasonError } = await supabase
+      .from("item_review_reasons")
+      .select("id")
+      .eq("code", selectedReasonCode)
+      .maybeSingle();
+
+    if (reviewReasonError) {
+      throw reviewReasonError;
+    }
+
+    if (!reviewReason?.id) {
+      throw new Error(`Review reason code "${selectedReasonCode}" was not found in item_review_reasons.`);
+    }
+
     return {
       ...payload,
       accepted: false,
+      review_reason_id: reviewReason.id,
     };
   }
 
@@ -402,9 +423,9 @@ function withItemModerationFields(resource, payload, formState) {
   };
 }
 
-function normalizePayload(resource, payload, formState) {
+async function normalizePayload(resource, payload, formState, supabase) {
   const withTradeOfferFields = withTradeOfferReviewFields(resource, payload);
-  return withItemModerationFields(resource, withTradeOfferFields, formState);
+  return withItemModerationFields(resource, withTradeOfferFields, formState, supabase);
 }
 
 function AdminResourcePanel({ resource, supabase }) {
@@ -466,7 +487,7 @@ function AdminResourcePanel({ resource, supabase }) {
     setBusy(true);
 
     try {
-      const normalizedPayload = normalizePayload(resource, payload, formState);
+      const normalizedPayload = await normalizePayload(resource, payload, formState, supabase);
       const { error: insertError } = await supabase.from(resource.table).insert(normalizedPayload);
 
       if (insertError) {
@@ -484,7 +505,7 @@ function AdminResourcePanel({ resource, supabase }) {
     setBusy(true);
 
     try {
-      const normalizedPayload = normalizePayload(resource, payload, formState);
+      const normalizedPayload = await normalizePayload(resource, payload, formState, supabase);
       const { error: updateError } = await supabase
         .from(resource.table)
         .update(normalizedPayload)
