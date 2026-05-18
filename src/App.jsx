@@ -13,6 +13,7 @@ import DeleteAccount from "./pages/DeleteAccount";
 import HowItWorks from "./pages/HowItWorks";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   const { i18n } = useTranslation();
@@ -37,6 +38,7 @@ export default function App() {
         <Route element={<AdminRoute />}>
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       {!isAdminRoute ? <Footer /> : null}

@@ -278,6 +278,17 @@ const resources = {
           generic: "We could not update your password. Please request a new reset link and try again.",
         },
       },
+      notFound: {
+        pageTitle: "Page Not Found",
+        badge: "Missing listing",
+        title: "This page wandered off.",
+        text: "Looks like you may have lost your item somewhere between a swap, a swipe, and a suspicious alley behind the marketplace.",
+        hint: "No worries. The page is missing, not your whole inventory.",
+        cta: "Back to home",
+        home: "Go to home",
+        howItWorks: "How SawaSwap works",
+        support: "Contact support",
+      },
       admin: {
         login: {
           pageTitle: "Admin Login",
@@ -737,6 +748,17 @@ const resources = {
           mismatch: "تأكيد كلمة المرور غير مطابق.",
           generic: "تعذر تحديث كلمة المرور. يرجى طلب رابط جديد لإعادة التعيين والمحاولة مرة أخرى.",
         },
+      },
+      notFound: {
+        pageTitle: "الصفحة غير موجودة",
+        badge: "منشور مفقود",
+        title: "يبدو أن هذه الصفحة ضاعت.",
+        text: "يبدو أنك أضعت غرضك في مكان ما بين التبديل والسحب وزقاق مريب خلف السوق.",
+        hint: "لا تقلق، الصفحة فقط هي المفقودة، وليس مخزونك بالكامل.",
+        cta: "العودة للرئيسية",
+        home: "الذهاب للرئيسية",
+        howItWorks: "كيف يعمل SawaSwap",
+        support: "التواصل مع الدعم",
       },
       admin: {
         login: {
