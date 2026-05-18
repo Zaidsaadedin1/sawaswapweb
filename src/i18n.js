@@ -305,6 +305,8 @@ const resources = {
           signInError: "Unable to sign in.",
           notAdminError: "This account signed in successfully, but it does not have admin access.",
           accessCheckError: "Login completed, but the admin session could not be confirmed.",
+          browserTimeoutError:
+            "Browser could not complete the Supabase login request. Check ad blockers, VPN, firewall, or browser privacy/network settings.",
         },
         route: {
           loadingTitle: "Checking admin access",
@@ -781,6 +783,8 @@ const resources = {
           signInError: "تعذر تسجيل الدخول.",
           notAdminError: "تم تسجيل الدخول بهذا الحساب، لكنه لا يملك صلاحية الإدارة.",
           accessCheckError: "اكتمل تسجيل الدخول، لكن تعذر تأكيد جلسة الإدارة.",
+          browserTimeoutError:
+            "تعذر على المتصفح إكمال طلب تسجيل الدخول إلى Supabase. تحقق من مانع الإعلانات أو الـ VPN أو الجدار الناري أو إعدادات الخصوصية والشبكة في المتصفح.",
         },
         route: {
           loadingTitle: "جارٍ التحقق من صلاحيات الإدارة",
