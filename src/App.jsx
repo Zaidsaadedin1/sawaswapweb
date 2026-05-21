@@ -1,4 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import { useTranslation } from "react-i18next";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -46,6 +47,7 @@ export default function App() {
       </Routes>
 
       {!isAdminRoute ? <Footer /> : null}
+      <Analytics />
     </div>
   );
 }
