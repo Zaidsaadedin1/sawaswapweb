@@ -35,6 +35,7 @@ Admin access is gated by `profiles.is_admin = true`.
 Before using the admin dashboard, run the SQL migration in:
 
 - `supabase/migrations/20260518120000_admin_controls.sql`
+- deploy the edge function in `supabase/functions/admin-reset-password`
 
 That migration adds:
 
@@ -44,3 +45,9 @@ That migration adds:
 - `trade_offers.admin_review_notes`
 
 Use `trade_offers.admin_review_status = 'approved'` for offers that should be public. Admins can also set the value to `cancelled`.
+
+For admin password resets, make sure the deployed edge function has access to:
+
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`

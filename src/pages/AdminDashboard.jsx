@@ -1,20 +1,208 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { createElement, useCallback, useEffect, useMemo, useState } from "react";
 import {
+  Bell,
+  Bookmark,
+  CalendarClock,
+  CheckCircle2,
+  CircleDollarSign,
+  ClipboardList,
+  Columns3,
+  FileImage,
+  FileJson,
+  FileSearch,
+  Filter,
   Eye,
   Funnel,
+  GalleryHorizontal,
+  Hash,
+  Heart,
+  IdCard,
+  Image,
+  Languages,
+  LayoutGrid,
+  KeyRound,
   LogOut,
+  Mail,
+  MapPin,
+  MessageSquare,
+  ScanSearch,
+  SearchCheck,
+  Send,
   Pencil,
+  Phone,
   Plus,
+  ScrollText,
   RefreshCw,
   Search,
+  Shield,
   ShieldCheck,
+  SlidersHorizontal,
+  Star,
+  Tag,
+  ToggleLeft,
   Trash2,
+  User,
+  UserCheck,
+  UserRound,
+  Users,
   X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { adminResources } from "../admin/resources";
 import TopBar from "../components/TopBar";
 import { useAdminAuth } from "../context/useAdminAuth";
+
+function isProbablyImageUrl(value) {
+  if (typeof value !== "string") {
+    return false;
+  }
+
+  const trimmedValue = value.trim().toLowerCase();
+  return (
+    /^https?:\/\//.test(trimmedValue) &&
+    (/(image|avatar|photo)/.test(trimmedValue) ||
+      /\.(avif|gif|jpe?g|png|svg|webp)(\?|#|$)/.test(trimmedValue))
+  );
+}
+
+function mapTradeOfferModerationStatus(value) {
+  if (value === "approved") {
+    return "accepted";
+  }
+
+  if (value === "cancelled") {
+    return "rejected";
+  }
+
+  return value;
+}
+
+function getModerationDisplayValue(resource, column, row) {
+  if (column === "moderation_status") {
+    if (resource.table === "items") {
+      if (row.accepted === true) {
+        return "accepted";
+      }
+
+      if (row.accepted === false) {
+        return "rejected";
+      }
+
+      return "";
+    }
+
+    if (resource.table === "trade_offers") {
+      return mapTradeOfferModerationStatus(row.admin_review_status);
+    }
+  }
+
+  if (resource.table === "trade_offers" && column === "admin_review_status") {
+    return mapTradeOfferModerationStatus(row.admin_review_status);
+  }
+
+  return row[column];
+}
+
+function formatValue(resource, column, row) {
+  const value = getModerationDisplayValue(resource, column, row);
+
+  if (value == null || value === "") {
+    return "—";
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => {
+        if (typeof entry === "string") {
+          return entry;
+        }
+
+        if (entry && typeof entry === "object") {
+          return entry.image_url || JSON.stringify(entry);
+        }
+
+        return String(entry);
+      })
+      .join(", ");
+  }
+
+  if (typeof value === "object") {
+    return JSON.stringify(value);
+  }
+
+  if (typeof value === "boolean") {
+    return value ? "true" : "false";
+  }
+
+  return String(value);
+}
+
+function compareValues(left, right) {
+  if (left == null || left === "") {
+    return right == null || right === "" ? 0 : 1;
+  }
+
+  if (right == null || right === "") {
+    return -1;
+  }
+
+  if (typeof left === "number" && typeof right === "number") {
+    return left - right;
+  }
+
+  const leftDate = Date.parse(left);
+  const rightDate = Date.parse(right);
+
+  if (!Number.isNaN(leftDate) && !Number.isNaN(rightDate)) {
+    return leftDate - rightDate;
+  }
+
+  return String(left).localeCompare(String(right), undefined, {
+    numeric: true,
+    sensitivity: "base",
+  });
+}
+
+function getColumnList(resource, rows) {
+  const declaredColumns = Object.keys(resource.fields);
+  const rowColumns = Array.from(
+    new Set(rows.flatMap((row) => Object.keys(row || {})).filter((column) => !declaredColumns.includes(column)))
+  );
+
+  return [...declaredColumns, ...rowColumns];
+}
+
+function CellContent({ resource, column, row }) {
+  const value = getModerationDisplayValue(resource, column, row);
+
+  if (column === "item_images_preview" && Array.isArray(value) && value.length > 0) {
+    return (
+      <div className="adminImageStack">
+        {value.map((image, index) => (
+          <a
+            key={`${row.id || row.item_id || "image"}-${index}`}
+            className="adminImageThumbLink"
+            href={image.image_url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img className="adminImageThumb" src={image.image_url} alt={`Item ${index + 1}`} loading="lazy" />
+          </a>
+        ))}
+      </div>
+    );
+  }
+
+  if (typeof value === "string" && isProbablyImageUrl(value)) {
+    return (
+      <a className="adminImageThumbLink" href={value} target="_blank" rel="noreferrer">
+        <img className="adminImageThumb" src={value} alt={column} loading="lazy" />
+      </a>
+    );
+  }
+
+  return formatValue(resource, column, row);
+}
 
 function toInputValue(value, type) {
   if (value == null) {
@@ -110,6 +298,113 @@ function getFieldLabel(t, resource, fieldName) {
   });
 }
 
+const DEFAULT_TABLE_ICON = LayoutGrid;
+const DEFAULT_FIELD_ICON = Columns3;
+
+const TABLE_ICONS = {
+  categories: Tag,
+  favorites: Heart,
+  filter_seed: Filter,
+  item_filters: SlidersHorizontal,
+  item_images: Image,
+  items: GalleryHorizontal,
+  match_messages: MessageSquare,
+  matches: Users,
+  notifications: Bell,
+  offer_messages: Send,
+  profiles: UserRound,
+  reports: Shield,
+  swipes: ScanSearch,
+  trade_offers: ClipboardList,
+  user_push_tokens: Bookmark,
+};
+
+const FIELD_ICONS = {
+  accepted: CheckCircle2,
+  accepted_at: CalendarClock,
+  action: ScanSearch,
+  admin_review_notes: ScrollText,
+  admin_review_status: Shield,
+  admin_reviewed_at: CalendarClock,
+  area: MapPin,
+  avatar_url: Image,
+  body: ScrollText,
+  cash_difference_amount: CircleDollarSign,
+  category_id: Tag,
+  city: MapPin,
+  completed_at: CalendarClock,
+  condition: SearchCheck,
+  confirm_password: KeyRound,
+  created_at: CalendarClock,
+  currency: CircleDollarSign,
+  data: FileJson,
+  description: ScrollText,
+  details: FileSearch,
+  email: Mail,
+  estimated_value: CircleDollarSign,
+  filter_id: Filter,
+  full_name: User,
+  icon: Star,
+  id: Hash,
+  image_url: Image,
+  interested_user_id: User,
+  is_active: ToggleLeft,
+  is_admin: ShieldCheck,
+  is_main: Image,
+  is_read: Bell,
+  is_verified: UserCheck,
+  item_id: GalleryHorizontal,
+  item_images_preview: FileImage,
+  level: Columns3,
+  match_id: Users,
+  message: MessageSquare,
+  moderation_status: Shield,
+  name_ar: Languages,
+  name_en: Languages,
+  offer_id: ClipboardList,
+  offer_type: ClipboardList,
+  offers_count: ClipboardList,
+  offered_item_id: GalleryHorizontal,
+  owner_id: User,
+  parent_id: Columns3,
+  parent_path: Columns3,
+  password: KeyRound,
+  path: Columns3,
+  phone: Phone,
+  platform: Bookmark,
+  rating: Star,
+  reason: FileSearch,
+  reported_user_id: User,
+  reporter_id: User,
+  requestor_id: User,
+  requested_item_id: GalleryHorizontal,
+  requester_id: User,
+  review_reason_code: FileSearch,
+  review_reason_id: FileSearch,
+  sender_id: Send,
+  slug: Tag,
+  sort_order: SlidersHorizontal,
+  status: CheckCircle2,
+  storage_path: FileImage,
+  title: ScrollText,
+  token: Bookmark,
+  total_trades: Users,
+  type: Columns3,
+  updated_at: CalendarClock,
+  user_id: User,
+  username: IdCard,
+  views_count: Eye,
+  wants_description: ScrollText,
+};
+
+function getTableIcon(resource) {
+  return TABLE_ICONS[resource.table] || DEFAULT_TABLE_ICON;
+}
+
+function getFieldIcon(fieldName) {
+  return FIELD_ICONS[fieldName] || DEFAULT_FIELD_ICON;
+}
+
 function DrawerShell({ title, subtitle, children, onClose }) {
   const { t } = useTranslation();
 
@@ -136,6 +431,79 @@ function DrawerShell({ title, subtitle, children, onClose }) {
         {children}
       </aside>
     </div>
+  );
+}
+
+function PasswordResetDrawer({ record, onClose, onSubmit, busy }) {
+  const { t } = useTranslation();
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError("");
+
+    if (password.length < 8) {
+      setError(t("admin.messages.passwordTooShort"));
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError(t("admin.messages.passwordMismatch"));
+      return;
+    }
+
+    try {
+      await onSubmit(password);
+    } catch (submitError) {
+      setError(submitError.message || t("admin.messages.passwordResetError"));
+    }
+  }
+
+  return (
+    <DrawerShell
+      title={t("admin.drawer.resetPasswordTitle")}
+      subtitle={record.username || record.full_name || record.id}
+      onClose={onClose}
+    >
+      {error ? <div className="adminAlert adminAlertError">{error}</div> : null}
+
+      <form className="adminFormGrid" onSubmit={handleSubmit}>
+        <label className="adminField">
+          <span>{t("admin.fields.password")}</span>
+          <input
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder={t("admin.fields.password")}
+            required
+            minLength={8}
+          />
+        </label>
+
+        <label className="adminField">
+          <span>{t("admin.fields.confirm_password")}</span>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            placeholder={t("admin.fields.confirm_password")}
+            required
+            minLength={8}
+          />
+        </label>
+
+        <div className="adminModalActions">
+          <button className="adminSecondaryBtn" type="button" onClick={onClose}>
+            {t("admin.actions.cancel")}
+          </button>
+          <button className="adminPrimaryBtn" type="submit" disabled={busy}>
+            {busy ? t("admin.actions.saving") : t("admin.actions.resetPassword")}
+          </button>
+        </div>
+      </form>
+    </DrawerShell>
   );
 }
 
@@ -268,7 +636,10 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy, s
 
           return (
             <label className="adminField" key={fieldName}>
-              <span>{getFieldLabel(t, resource, fieldName)}</span>
+              <span className="adminFieldLabel">
+                {createElement(getFieldIcon(fieldName), { size: 14 })}
+                {getFieldLabel(t, resource, fieldName)}
+              </span>
 
               {fieldConfig.type === "textarea" || fieldConfig.type === "json" ? (
                 <textarea
@@ -341,36 +712,29 @@ function ResourceFormDrawer({ resource, mode, record, onClose, onSubmit, busy, s
   );
 }
 
-function formatCellValue(value) {
-  if (value == null) {
-    return "—";
-  }
-
-  if (typeof value === "object") {
-    return JSON.stringify(value);
-  }
-
-  if (typeof value === "boolean") {
-    return value ? "true" : "false";
-  }
-
-  return String(value);
-}
-
-function withTradeOfferReviewFields(resource, payload) {
+function withTradeOfferReviewFields(resource, payload, formState) {
   if (resource.table !== "trade_offers") {
     return payload;
   }
 
-  if (payload.admin_review_status === "approved" || payload.admin_review_status === "cancelled") {
+  const nextAdminReviewStatus =
+    formState.moderation_status === "accepted"
+      ? "approved"
+      : formState.moderation_status === "rejected"
+        ? "cancelled"
+        : payload.admin_review_status;
+
+  if (nextAdminReviewStatus === "approved" || nextAdminReviewStatus === "cancelled") {
     return {
       ...payload,
+      admin_review_status: nextAdminReviewStatus,
       admin_reviewed_at: new Date().toISOString(),
     };
   }
 
   return {
     ...payload,
+    admin_review_status: nextAdminReviewStatus,
     admin_reviewed_at: null,
   };
 }
@@ -424,7 +788,7 @@ async function withItemModerationFields(resource, payload, formState, supabase) 
 }
 
 async function normalizePayload(resource, payload, formState, supabase) {
-  const withTradeOfferFields = withTradeOfferReviewFields(resource, payload);
+  const withTradeOfferFields = withTradeOfferReviewFields(resource, payload, formState);
   return withItemModerationFields(resource, withTradeOfferFields, formState, supabase);
 }
 
@@ -438,14 +802,12 @@ function AdminResourcePanel({ resource, supabase }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [viewRecord, setViewRecord] = useState(null);
   const [editingRecord, setEditingRecord] = useState(null);
+  const [passwordResetRecord, setPasswordResetRecord] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [busy, setBusy] = useState(false);
   const resourceLabel = getResourceLabel(t, resource);
 
-  const visibleColumns = useMemo(
-    () => resource.previewColumns || Object.keys(resource.fields).slice(0, 6),
-    [resource.fields, resource.previewColumns]
-  );
+  const visibleColumns = useMemo(() => getColumnList(resource, rows), [resource, rows]);
   const filteredRows = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
@@ -454,19 +816,23 @@ function AdminResourcePanel({ resource, supabase }) {
     }
 
     return rows.filter((row) =>
-      visibleColumns.some((column) => String(formatCellValue(row[column])).toLowerCase().includes(query))
+      visibleColumns.some((column) => formatValue(resource, column, row).toLowerCase().includes(query))
     );
-  }, [rows, searchTerm, visibleColumns]);
+  }, [resource, rows, searchTerm, visibleColumns]);
+  const sortedRows = useMemo(() => {
+    return [...filteredRows].sort((leftRow, rightRow) => {
+      const leftValue = getModerationDisplayValue(resource, sortColumn, leftRow);
+      const rightValue = getModerationDisplayValue(resource, sortColumn, rightRow);
+      const comparison = compareValues(leftValue, rightValue);
+      return sortAscending ? comparison : comparison * -1;
+    });
+  }, [filteredRows, resource, sortAscending, sortColumn]);
 
   const loadRows = useCallback(async () => {
     setLoading(true);
     setError("");
 
-    const { data, error: queryError } = await supabase
-      .from(resource.table)
-      .select("*")
-      .order(sortColumn, { ascending: sortAscending })
-      .limit(50);
+    const { data, error: queryError } = await supabase.from(resource.table).select("*");
 
     if (queryError) {
       setRows([]);
@@ -475,9 +841,39 @@ function AdminResourcePanel({ resource, supabase }) {
       return;
     }
 
-    setRows(data || []);
+    let nextRows = data || [];
+
+    if (resource.table === "items" && nextRows.length > 0) {
+      const itemIds = nextRows.map((row) => row.id).filter(Boolean);
+      const { data: imageRows, error: imageError } = await supabase
+        .from("item_images")
+        .select("item_id, image_url, sort_order, is_main")
+        .in("item_id", itemIds)
+        .order("is_main", { ascending: false })
+        .order("sort_order", { ascending: true });
+
+      if (imageError) {
+        setError(imageError.message || t("admin.messages.loadError", { resource: resourceLabel }));
+      } else {
+        const imagesByItemId = (imageRows || []).reduce((accumulator, imageRow) => {
+          if (!accumulator[imageRow.item_id]) {
+            accumulator[imageRow.item_id] = [];
+          }
+
+          accumulator[imageRow.item_id].push(imageRow);
+          return accumulator;
+        }, {});
+
+        nextRows = nextRows.map((row) => ({
+          ...row,
+          item_images_preview: imagesByItemId[row.id] || [],
+        }));
+      }
+    }
+
+    setRows(nextRows);
     setLoading(false);
-  }, [resource.table, resourceLabel, sortAscending, sortColumn, supabase, t]);
+  }, [resource.table, resourceLabel, supabase, t]);
 
   useEffect(() => {
     queueMicrotask(loadRows);
@@ -554,11 +950,43 @@ function AdminResourcePanel({ resource, supabase }) {
     }
   }
 
+  async function handlePasswordReset(nextPassword) {
+    if (!passwordResetRecord?.id) {
+      return;
+    }
+
+    setBusy(true);
+    setError("");
+
+    try {
+      const { error: resetError } = await supabase.functions.invoke("admin-reset-password", {
+        body: {
+          userId: passwordResetRecord.id,
+          password: nextPassword,
+        },
+      });
+
+      if (resetError) {
+        throw resetError;
+      }
+
+      window.alert(t("admin.messages.passwordResetSuccess"));
+      setPasswordResetRecord(null);
+    } catch (passwordResetError) {
+      setError(passwordResetError.message || t("admin.messages.passwordResetError"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <section className="adminPanel">
       <div className="adminPanelHeader">
         <div>
-          <p className="adminOverline">{resource.table}</p>
+          <p className="adminOverline">
+            {createElement(getTableIcon(resource), { size: 14 })}
+            {resource.table}
+          </p>
           <h2>{resourceLabel}</h2>
           <p className="adminPanelMeta">{t("admin.panel.meta")}</p>
         </div>
@@ -577,7 +1005,7 @@ function AdminResourcePanel({ resource, supabase }) {
           <div className="adminSortBox">
             <Funnel size={16} />
             <select value={sortColumn} onChange={(event) => setSortColumn(event.target.value)}>
-              {Object.keys(resource.fields).map((fieldName) => (
+              {visibleColumns.map((fieldName) => (
                 <option key={fieldName} value={fieldName}>
                   {getFieldLabel(t, resource, fieldName)}
                 </option>
@@ -615,9 +1043,31 @@ function AdminResourcePanel({ resource, supabase }) {
           <thead>
             <tr>
               {visibleColumns.map((column) => (
-                <th key={column}>{getFieldLabel(t, resource, column)}</th>
+                <th
+                  key={column}
+                  className="adminSortableHeader"
+                  onClick={() => {
+                    if (sortColumn === column) {
+                      setSortAscending((current) => !current);
+                      return;
+                    }
+
+                    setSortColumn(column);
+                    setSortAscending(true);
+                  }}
+                >
+                  <span className="adminHeaderLabel">
+                    {createElement(getFieldIcon(column), { size: 14 })}
+                    {getFieldLabel(t, resource, column)}
+                  </span>
+                </th>
               ))}
-              <th>{t("admin.panel.actionsHeader")}</th>
+              <th>
+                <span className="adminHeaderLabel">
+                  <Columns3 size={14} />
+                  {t("admin.panel.actionsHeader")}
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -629,7 +1079,7 @@ function AdminResourcePanel({ resource, supabase }) {
               </tr>
             ) : null}
 
-            {!loading && filteredRows.length === 0 ? (
+            {!loading && sortedRows.length === 0 ? (
               <tr>
                 <td colSpan={visibleColumns.length + 1} className="adminTableEmpty">
                   {searchTerm ? t("admin.messages.noSearchResults") : t("admin.messages.noRecords")}
@@ -638,10 +1088,12 @@ function AdminResourcePanel({ resource, supabase }) {
             ) : null}
 
             {!loading
-              ? filteredRows.map((row) => (
+              ? sortedRows.map((row) => (
                   <tr key={row[resource.primaryKey]}>
                     {visibleColumns.map((column) => (
-                      <td key={column}>{formatCellValue(row[column])}</td>
+                      <td key={column}>
+                        <CellContent resource={resource} column={column} row={row} />
+                      </td>
                     ))}
                     <td>
                       <div className="adminRowActions">
@@ -670,6 +1122,17 @@ function AdminResourcePanel({ resource, supabase }) {
                         >
                           <Trash2 size={16} />
                         </button>
+                        {resource.table === "profiles" ? (
+                          <button
+                            className="adminIconBtn"
+                            type="button"
+                            onClick={() => setPasswordResetRecord(row)}
+                            title={t("admin.actions.resetPassword")}
+                            disabled={busy}
+                          >
+                            <KeyRound size={16} />
+                          </button>
+                        ) : null}
                       </div>
                     </td>
                   </tr>
@@ -714,6 +1177,15 @@ function AdminResourcePanel({ resource, supabase }) {
           onSubmit={async () => {}}
           busy={false}
           supabase={supabase}
+        />
+      ) : null}
+
+      {passwordResetRecord ? (
+        <PasswordResetDrawer
+          record={passwordResetRecord}
+          onClose={() => setPasswordResetRecord(null)}
+          onSubmit={handlePasswordReset}
+          busy={busy}
         />
       ) : null}
     </section>
@@ -767,7 +1239,10 @@ export default function AdminDashboard() {
                 type="button"
                 onClick={() => setActiveTable(resource.table)}
               >
-                <span>{getResourceLabel(t, resource)}</span>
+                <span className="adminNavLabel">
+                  {createElement(getTableIcon(resource), { size: 16 })}
+                  {getResourceLabel(t, resource)}
+                </span>
                 <small>{resource.table}</small>
               </button>
             ))}

@@ -93,8 +93,8 @@ export const adminResources = [
     label: "Items",
     primaryKey: "id",
     defaultSort: { column: "created_at", ascending: false },
-    previewColumns: ["title", "owner_id", "status", "accepted", "review_reason_id", "created_at"],
     fields: baseFields({
+      item_images_preview: { type: "image-list", readOnly: true, hideInForm: true, virtual: true },
       id: { ...UUID_FIELD, readOnly: true },
       owner_id: { type: "text", required: true },
       category_id: { type: "text" },
@@ -126,7 +126,8 @@ export const adminResources = [
       },
       moderation_status: {
         type: "select",
-        options: ["pending", "accepted", "rejected"],
+        options: ["accepted", "rejected"],
+        required: true,
         getInitialValue: (record) => {
           if (record?.accepted === true) {
             return "accepted";
@@ -136,7 +137,7 @@ export const adminResources = [
             return "rejected";
           }
 
-          return "pending";
+          return "";
         },
         virtual: true,
       },
@@ -268,14 +269,6 @@ export const adminResources = [
     label: "Trade Offers",
     primaryKey: "id",
     defaultSort: { column: "updated_at", ascending: false },
-    previewColumns: [
-      "requested_item_id",
-      "requester_id",
-      "owner_id",
-      "status",
-      "admin_review_status",
-      "updated_at",
-    ],
     fields: baseFields({
       id: { ...UUID_FIELD, readOnly: true },
       requester_id: { type: "text", required: true },
@@ -292,10 +285,29 @@ export const adminResources = [
       },
       accepted_at: { type: "datetime-local" },
       completed_at: { type: "datetime-local" },
+      moderation_status: {
+        type: "select",
+        options: ["accepted", "rejected"],
+        required: true,
+        getInitialValue: (record) => {
+          if (record?.admin_review_status === "approved") {
+            return "accepted";
+          }
+
+          if (record?.admin_review_status === "cancelled") {
+            return "rejected";
+          }
+
+          return "";
+        },
+        virtual: true,
+      },
       admin_review_status: {
         type: "select",
         options: ["pending", "approved", "cancelled"],
         required: true,
+        readOnly: true,
+        hideInForm: true,
       },
       admin_reviewed_at: { type: "datetime-local", readOnly: true },
       admin_review_notes: { type: "textarea" },

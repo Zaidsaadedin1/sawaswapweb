@@ -1466,6 +1466,18 @@ button {
   color: var(--navy);
 }
 
+.adminFieldLabel,
+.adminHeaderLabel,
+.adminNavLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adminHeaderLabel {
+  white-space: nowrap;
+}
+
 .adminField input,
 .adminField textarea,
 .adminField select {
@@ -1593,9 +1605,14 @@ button {
   display: block;
 }
 
+.adminNavLabel {
+  font-weight: 800;
+}
+
 .adminNavItem small {
   color: var(--muted);
   margin-top: 4px;
+  padding-left: 24px;
 }
 
 .adminNavItem.active {
@@ -1691,13 +1708,15 @@ button {
 .adminTableWrap {
   overflow: auto;
   margin-top: 22px;
-  max-height: 70vh;
+  max-height: 72vh;
+  max-width: 100%;
   border: 1px solid rgba(229, 231, 235, 0.95);
   border-radius: 24px;
 }
 
 .adminTable {
-  width: 100%;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   min-width: 840px;
 }
@@ -1708,12 +1727,14 @@ button {
   padding: 14px 16px;
   border-bottom: 1px solid rgba(229, 231, 235, 0.85);
   vertical-align: top;
+  min-width: 160px;
 }
 
 .adminTable th {
   position: sticky;
   top: 0;
   z-index: 1;
+  cursor: pointer;
   font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1722,10 +1743,35 @@ button {
 }
 
 .adminTable td {
-  max-width: 240px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 320px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.adminSortableHeader {
+  user-select: none;
+}
+
+.adminImageStack {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.adminImageThumbLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.adminImageThumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid rgba(229, 231, 235, 0.95);
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .adminTableEmpty {
