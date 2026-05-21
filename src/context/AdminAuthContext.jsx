@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getSupabaseClient } from "../lib/supabase";
 import { AdminAuthContext } from "./useAdminAuth";
 
@@ -44,6 +44,24 @@ export function AdminAuthProvider({ children }) {
   const [loading, setLoading] = useState(() => Boolean(supabase));
   const [error, setError] = useState("");
 
+  const applyAdminState = useCallback(
+    async (nextSession) => {
+      if (!supabase) {
+        return { session: null, profile: null, error: "Supabase is not configured." };
+      }
+
+      setLoading(true);
+      const nextState = await resolveAdminState(supabase, nextSession);
+      setSession(nextState.session);
+      setProfile(nextState.profile);
+      setError(nextState.error);
+      setLoading(false);
+
+      return nextState;
+    },
+    [supabase]
+  );
+
   useEffect(() => {
     if (!supabase) {
       return undefined;
@@ -86,22 +104,28 @@ export function AdminAuthProvider({ children }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       if (!isActive) {
         return;
       }
 
       setLoading(true);
-      const nextState = await resolveAdminState(supabase, nextSession);
+      window.setTimeout(() => {
+        if (!isActive) {
+          return;
+        }
 
-      if (!isActive) {
-        return;
-      }
+        void resolveAdminState(supabase, nextSession).then((nextState) => {
+          if (!isActive) {
+            return;
+          }
 
-      setSession(nextState.session);
-      setProfile(nextState.profile);
-      setError(nextState.error);
-      setLoading(false);
+          setSession(nextState.session);
+          setProfile(nextState.profile);
+          setError(nextState.error);
+          setLoading(false);
+        });
+      }, 0);
     });
 
     return () => {
@@ -171,16 +195,8 @@ export function AdminAuthProvider({ children }) {
           throw signInError;
         }
 
-        setLoading(true);
-        setError("");
-
-        const nextState = await resolveAdminState(supabase, data.session);
-        setSession(nextState.session);
-        setProfile(nextState.profile);
-        setError(nextState.error);
-        setLoading(false);
-
-        return { ...data, profile: nextState.profile };
+        await applyAdminState(data.session);
+        return { ...data };
       },
       async signOut() {
         if (!supabase) {
@@ -194,7 +210,7 @@ export function AdminAuthProvider({ children }) {
         }
       },
     }),
-    [error, loading, profile, session, supabase]
+    [applyAdminState, error, loading, profile, session, supabase]
   );
 
   return <AdminAuthContext.Provider value={value}>{children}</AdminAuthContext.Provider>;
