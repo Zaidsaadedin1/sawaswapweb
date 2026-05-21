@@ -55,6 +55,10 @@ button {
   overflow-x: hidden;
 }
 
+.app.adminApp {
+  overflow-x: auto;
+}
+
 /* Navbar */
 
 .siteHeader {
@@ -1633,6 +1637,7 @@ button {
 .adminContent {
   display: grid;
   gap: 24px;
+  min-width: 0;
 }
 
 .adminHero {

@@ -66,6 +66,12 @@ body {
   box-sizing: border-box;
 }
 
+#root:has(.adminApp) {
+  width: 100%;
+  max-width: none;
+  border-inline: 0;
+}
+
 h1,
 h2 {
   font-family: var(--heading);

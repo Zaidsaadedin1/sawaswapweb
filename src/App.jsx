@@ -25,7 +25,7 @@ export default function App() {
   const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
-    <div dir={isArabic ? "rtl" : "ltr"} className="app">
+    <div dir={isArabic ? "rtl" : "ltr"} className={isAdminRoute ? "app adminApp" : "app"}>
       {!isAdminRoute ? <Navbar /> : null}
 
       <Routes>

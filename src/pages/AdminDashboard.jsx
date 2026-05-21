@@ -58,10 +58,32 @@ function isProbablyImageUrl(value) {
   }
 
   const trimmedValue = value.trim().toLowerCase();
+
+  if (!/^https?:\/\//.test(trimmedValue)) {
+    return false;
+  }
+
+  const knownImageHosts = [
+    "googleusercontent.com",
+    "ggpht.com",
+    "gravatar.com",
+    "cloudinary.com",
+    "supabase.co",
+  ];
+
+  try {
+    const parsedUrl = new URL(trimmedValue);
+
+    if (knownImageHosts.some((host) => parsedUrl.hostname === host || parsedUrl.hostname.endsWith(`.${host}`))) {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+
   return (
-    /^https?:\/\//.test(trimmedValue) &&
-    (/(image|avatar|photo)/.test(trimmedValue) ||
-      /\.(avif|gif|jpe?g|png|svg|webp)(\?|#|$)/.test(trimmedValue))
+    /(image|avatar|photo)/.test(trimmedValue) ||
+    /\.(avif|gif|jpe?g|png|svg|webp)(\?|#|$)/.test(trimmedValue)
   );
 }
 
