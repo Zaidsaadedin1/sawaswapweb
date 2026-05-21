@@ -1779,6 +1779,11 @@ button {
   background: rgba(255, 255, 255, 0.7);
 }
 
+.adminMultilineCell {
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
 .adminTableEmpty {
   text-align: center !important;
   padding: 40px 16px !important;

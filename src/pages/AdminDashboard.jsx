@@ -52,6 +52,26 @@ import { adminResources } from "../admin/resources";
 import TopBar from "../components/TopBar";
 import { useAdminAuth } from "../context/useAdminAuth";
 
+function isDateTimeField(resource, column) {
+  return resource.fields?.[column]?.type === "datetime-local";
+}
+
+function formatDateTimeValue(value) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return String(value);
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+}
+
 function isProbablyImageUrl(value) {
   if (typeof value !== "string") {
     return false;
@@ -132,6 +152,10 @@ function formatValue(resource, column, row) {
     return "—";
   }
 
+  if (isDateTimeField(resource, column)) {
+    return formatDateTimeValue(value);
+  }
+
   if (Array.isArray(value)) {
     return value
       .map((entry) => {
@@ -194,6 +218,259 @@ function getColumnList(resource, rows) {
   return [...declaredColumns, ...rowColumns];
 }
 
+function uniqueValues(values) {
+  return Array.from(new Set(values.filter(Boolean)));
+}
+
+function getProfileName(profile, fallbackId = "") {
+  if (!profile) {
+    return fallbackId || "Unknown user";
+  }
+
+  return profile.full_name || profile.username || fallbackId || profile.id;
+}
+
+async function loadProfilesMap(supabase, userIds) {
+  const nextUserIds = uniqueValues(userIds);
+
+  if (nextUserIds.length === 0) {
+    return {};
+  }
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, full_name, username, avatar_url")
+    .in("id", nextUserIds);
+
+  if (error) {
+    throw error;
+  }
+
+  return Object.fromEntries((data || []).map((profile) => [profile.id, profile]));
+}
+
+function groupRowsBy(rows, key) {
+  return rows.reduce((accumulator, row) => {
+    const groupKey = row[key];
+
+    if (!groupKey) {
+      return accumulator;
+    }
+
+    if (!accumulator[groupKey]) {
+      accumulator[groupKey] = [];
+    }
+
+    accumulator[groupKey].push(row);
+    return accumulator;
+  }, {});
+}
+
+function buildConversationThread(messages, profilesById) {
+  return (messages || [])
+    .map((messageRow) => `${getProfileName(profilesById[messageRow.sender_id], messageRow.sender_id)}: ${messageRow.message}`)
+    .join("\n\n");
+}
+
+async function enrichMatchRows(rows, supabase) {
+  const matchIds = uniqueValues(rows.map((row) => row.id));
+  const userIds = uniqueValues(rows.flatMap((row) => [row.owner_id, row.interested_user_id]));
+  const [profilesById, matchMessagesResult] = await Promise.all([
+    loadProfilesMap(supabase, userIds),
+    matchIds.length
+      ? supabase
+          .from("match_messages")
+          .select("id, match_id, sender_id, message, created_at")
+          .in("match_id", matchIds)
+          .order("created_at", { ascending: true })
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+
+  if (matchMessagesResult.error) {
+    throw matchMessagesResult.error;
+  }
+
+  const messagesByMatchId = groupRowsBy(matchMessagesResult.data || [], "match_id");
+
+  return rows.map((row) => {
+    const ownerProfile = profilesById[row.owner_id];
+    const interestedProfile = profilesById[row.interested_user_id];
+
+    return {
+      ...row,
+      owner_name: getProfileName(ownerProfile, row.owner_id),
+      owner_avatar_url: ownerProfile?.avatar_url || "",
+      interested_user_name: getProfileName(interestedProfile, row.interested_user_id),
+      interested_user_avatar_url: interestedProfile?.avatar_url || "",
+      conversation_participants: `${getProfileName(ownerProfile, row.owner_id)} <-> ${getProfileName(
+        interestedProfile,
+        row.interested_user_id
+      )}`,
+      conversation_thread: buildConversationThread(messagesByMatchId[row.id], profilesById),
+    };
+  });
+}
+
+async function enrichMatchMessageRows(rows, supabase) {
+  const matchIds = uniqueValues(rows.map((row) => row.match_id));
+  const { data: matches, error: matchesError } = await supabase
+    .from("matches")
+    .select("id, owner_id, interested_user_id")
+    .in("id", matchIds);
+
+  if (matchesError) {
+    throw matchesError;
+  }
+
+  const matchesById = Object.fromEntries((matches || []).map((matchRow) => [matchRow.id, matchRow]));
+  const userIds = uniqueValues(
+    rows.flatMap((row) => {
+      const matchRow = matchesById[row.match_id];
+      return [row.sender_id, matchRow?.owner_id, matchRow?.interested_user_id];
+    })
+  );
+  const [profilesById, allMessagesResult] = await Promise.all([
+    loadProfilesMap(supabase, userIds),
+    matchIds.length
+      ? supabase
+          .from("match_messages")
+          .select("id, match_id, sender_id, message, created_at")
+          .in("match_id", matchIds)
+          .order("created_at", { ascending: true })
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+
+  if (allMessagesResult.error) {
+    throw allMessagesResult.error;
+  }
+
+  const messagesByMatchId = groupRowsBy(allMessagesResult.data || [], "match_id");
+
+  return rows.map((row) => {
+    const matchRow = matchesById[row.match_id];
+    const ownerProfile = profilesById[matchRow?.owner_id];
+    const interestedProfile = profilesById[matchRow?.interested_user_id];
+    const senderProfile = profilesById[row.sender_id];
+
+    return {
+      ...row,
+      sender_name: getProfileName(senderProfile, row.sender_id),
+      sender_avatar_url: senderProfile?.avatar_url || "",
+      owner_name: getProfileName(ownerProfile, matchRow?.owner_id),
+      interested_user_name: getProfileName(interestedProfile, matchRow?.interested_user_id),
+      conversation_participants: `${getProfileName(ownerProfile, matchRow?.owner_id)} <-> ${getProfileName(
+        interestedProfile,
+        matchRow?.interested_user_id
+      )}`,
+      conversation_thread: buildConversationThread(messagesByMatchId[row.match_id], profilesById),
+    };
+  });
+}
+
+async function enrichOfferMessageRows(rows, supabase) {
+  const offerIds = uniqueValues(rows.map((row) => row.offer_id));
+  const { data: offers, error: offersError } = await supabase
+    .from("trade_offers")
+    .select("id, requester_id, owner_id")
+    .in("id", offerIds);
+
+  if (offersError) {
+    throw offersError;
+  }
+
+  const offersById = Object.fromEntries((offers || []).map((offerRow) => [offerRow.id, offerRow]));
+  const userIds = uniqueValues(
+    rows.flatMap((row) => {
+      const offerRow = offersById[row.offer_id];
+      return [row.sender_id, offerRow?.requester_id, offerRow?.owner_id];
+    })
+  );
+  const [profilesById, allMessagesResult] = await Promise.all([
+    loadProfilesMap(supabase, userIds),
+    offerIds.length
+      ? supabase
+          .from("offer_messages")
+          .select("id, offer_id, sender_id, message, created_at")
+          .in("offer_id", offerIds)
+          .order("created_at", { ascending: true })
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+
+  if (allMessagesResult.error) {
+    throw allMessagesResult.error;
+  }
+
+  const messagesByOfferId = groupRowsBy(allMessagesResult.data || [], "offer_id");
+
+  return rows.map((row) => {
+    const offerRow = offersById[row.offer_id];
+    const requesterProfile = profilesById[offerRow?.requester_id];
+    const ownerProfile = profilesById[offerRow?.owner_id];
+    const senderProfile = profilesById[row.sender_id];
+
+    return {
+      ...row,
+      sender_name: getProfileName(senderProfile, row.sender_id),
+      sender_avatar_url: senderProfile?.avatar_url || "",
+      requester_name: getProfileName(requesterProfile, offerRow?.requester_id),
+      owner_name: getProfileName(ownerProfile, offerRow?.owner_id),
+      conversation_participants: `${getProfileName(requesterProfile, offerRow?.requester_id)} <-> ${getProfileName(
+        ownerProfile,
+        offerRow?.owner_id
+      )}`,
+      conversation_thread: buildConversationThread(messagesByOfferId[row.offer_id], profilesById),
+    };
+  });
+}
+
+async function enrichSwipeRows(rows, supabase) {
+  const itemIds = uniqueValues(rows.map((row) => row.item_id));
+  const { data: items, error: itemsError } = await supabase
+    .from("items")
+    .select("id, title, owner_id")
+    .in("id", itemIds);
+
+  if (itemsError) {
+    throw itemsError;
+  }
+
+  const itemsById = Object.fromEntries((items || []).map((itemRow) => [itemRow.id, itemRow]));
+  const userIds = uniqueValues(
+    rows.flatMap((row) => [row.user_id, itemsById[row.item_id]?.owner_id])
+  );
+  const profilesById = await loadProfilesMap(supabase, userIds);
+
+  return rows.map((row) => {
+    const userProfile = profilesById[row.user_id];
+    const itemRow = itemsById[row.item_id];
+    const ownerProfile = profilesById[itemRow?.owner_id];
+
+    return {
+      ...row,
+      user_name: getProfileName(userProfile, row.user_id),
+      user_avatar_url: userProfile?.avatar_url || "",
+      item_title: itemRow?.title || row.item_id,
+      item_owner_name: getProfileName(ownerProfile, itemRow?.owner_id),
+      item_owner_avatar_url: ownerProfile?.avatar_url || "",
+    };
+  });
+}
+
+async function enrichAdminRows(resource, rows, supabase) {
+  switch (resource.table) {
+    case "matches":
+      return enrichMatchRows(rows, supabase);
+    case "match_messages":
+      return enrichMatchMessageRows(rows, supabase);
+    case "offer_messages":
+      return enrichOfferMessageRows(rows, supabase);
+    case "swipes":
+      return enrichSwipeRows(rows, supabase);
+    default:
+      return rows;
+  }
+}
+
 function CellContent({ resource, column, row }) {
   const value = getModerationDisplayValue(resource, column, row);
 
@@ -221,6 +498,10 @@ function CellContent({ resource, column, row }) {
         <img className="adminImageThumb" src={value} alt={column} loading="lazy" />
       </a>
     );
+  }
+
+  if (typeof value === "string" && value.includes("\n")) {
+    return <div className="adminMultilineCell">{value}</div>;
   }
 
   return formatValue(resource, column, row);
@@ -388,6 +669,8 @@ const FIELD_ICONS = {
   offers_count: ClipboardList,
   offered_item_id: GalleryHorizontal,
   owner_id: User,
+  owner_avatar_url: Image,
+  owner_name: User,
   parent_id: Columns3,
   parent_path: Columns3,
   password: KeyRound,
@@ -401,9 +684,12 @@ const FIELD_ICONS = {
   requestor_id: User,
   requested_item_id: GalleryHorizontal,
   requester_id: User,
+  requester_name: User,
   review_reason_code: FileSearch,
   review_reason_id: FileSearch,
   sender_id: Send,
+  sender_avatar_url: Image,
+  sender_name: User,
   slug: Tag,
   sort_order: SlidersHorizontal,
   status: CheckCircle2,
@@ -414,9 +700,18 @@ const FIELD_ICONS = {
   type: Columns3,
   updated_at: CalendarClock,
   user_id: User,
+  user_avatar_url: Image,
+  user_name: User,
   username: IdCard,
   views_count: Eye,
   wants_description: ScrollText,
+  conversation_participants: Users,
+  conversation_thread: MessageSquare,
+  interested_user_avatar_url: Image,
+  interested_user_name: User,
+  item_owner_avatar_url: Image,
+  item_owner_name: User,
+  item_title: ScrollText,
 };
 
 function getTableIcon(resource) {
@@ -893,9 +1188,11 @@ function AdminResourcePanel({ resource, supabase }) {
       }
     }
 
+    nextRows = await enrichAdminRows(resource, nextRows, supabase);
+
     setRows(nextRows);
     setLoading(false);
-  }, [resource.table, resourceLabel, supabase, t]);
+  }, [resource, resourceLabel, supabase, t]);
 
   useEffect(() => {
     queueMicrotask(loadRows);
