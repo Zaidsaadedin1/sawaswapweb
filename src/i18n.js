@@ -141,7 +141,7 @@ const resources = {
       },
       support: {
         title: "Support",
-        text: "Need help or want to report an issue? Contact us.",
+        text: "Need help, want to report a listing or user, or need safety support? Contact us.",
         email: "support@sawaswap.com",
         noreply: "no-reply@sawaswap.com",
         location: "Jordan",
@@ -177,9 +177,9 @@ const resources = {
       terms: {
         badge: "Legal",
         title: "Terms and Conditions",
-        updated: "Last updated: May 2026",
+        updated: "Last updated: May 30, 2026",
         intro:
-          "These Terms and Conditions explain the rules for using SawaSwap. By using our website or mobile app, you agree to follow these terms.",
+          "These Terms and Conditions explain the rules for using SawaSwap. To create or access an account, you must accept these terms. By using our website or mobile app, you agree to follow them.",
         sections: [
           {
             title: "1. About SawaSwap",
@@ -187,43 +187,51 @@ const resources = {
           },
           {
             title: "2. User accounts",
-            body: "Users may need to create an account to post items, create offers, match, or send messages. You are responsible for keeping your login details secure and for all activity under your account.",
+            body: "Users must accept these terms before creating or accessing an account to post items, create offers, match, or send messages. You are responsible for keeping your login details secure and for all activity under your account.",
           },
           {
-            title: "3. Listings and item information",
-            body: "Users must provide accurate information about their items, including condition, images, location, and exchange expectations. Do not post fake, stolen, illegal, dangerous, or misleading items.",
+            title: "3. User content and item information",
+            body: "Users are responsible for the content they create on SawaSwap, including item posts, images, descriptions, profile details, offers, and chat messages. You must provide accurate information and must not post fake, stolen, misleading, illegal, or dangerous items or content.",
           },
           {
             title: "4. Buying, selling, and swapping",
             body: "SawaSwap helps users communicate and agree on deals. The final exchange, payment, delivery, meeting, or inspection is handled directly between users. Users are responsible for confirming item quality and deal terms before completing any exchange.",
           },
           {
-            title: "5. Messaging and matches",
-            body: "Users may message each other after a match or offer. Messages must be respectful and must not include harassment, scams, threats, spam, or illegal activity.",
+            title: "5. Messaging, profiles, and respectful conduct",
+            body: "Users may message each other after a match or offer and may interact through their profiles and listings. Messages and profile activity must be respectful and must not include harassment, bullying, hate speech, threats, sexual exploitation, scams, impersonation, spam, or other abusive or illegal behavior.",
           },
           {
-            title: "6. Prohibited activity",
-            body: "You may not use SawaSwap to post illegal goods, counterfeit products, weapons, drugs, stolen items, adult services, financial scams, or any content that violates applicable laws or platform rules.",
+            title: "6. Prohibited content and activity",
+            body: "You may not use SawaSwap to post, share, request, or promote offensive, objectionable, fraudulent, or unlawful content or conduct. This includes illegal items, counterfeit goods, weapons, drugs, stolen property, adult sexual content or services, financial scams, deceptive offers, and content that is abusive, threatening, discriminatory, or intended to exploit or harm others.",
           },
           {
-            title: "7. Safety",
-            body: "Meet in safe public places, inspect items before exchange, avoid sending money in suspicious situations, and report users or listings that appear unsafe or fraudulent.",
+            title: "7. Reporting and blocking tools",
+            body: "SawaSwap provides in-app tools to report listings or users and to block users. Use reporting tools if you believe content or behavior is unsafe, abusive, fraudulent, illegal, or otherwise violates these terms. Blocking a user may hide relevant feed and chat interactions between you and that user inside the app.",
           },
           {
-            title: "8. Account suspension",
-            body: "We may remove listings, restrict features, or suspend accounts that violate these terms, harm other users, or create safety or legal risks.",
+            title: "8. Moderation and safety review",
+            body: "We may apply automated or manual checks to certain text fields, categories, profiles, offers, messages, and reports to help detect objectionable or prohibited content and enforce platform rules. Reported safety issues are reviewed as quickly as reasonably possible, and we aim to review reported objectionable content within 24 hours.",
           },
           {
-            title: "9. Limitation of responsibility",
-            body: "SawaSwap provides tools for users to connect. We are not responsible for user behavior, item quality, payments, delivery, loss, damage, or disputes between users.",
+            title: "9. Removal, restrictions, and account action",
+            body: "We may remove content, limit visibility, restrict features, reject listings or offers, or suspend or terminate accounts when we believe content or conduct violates these terms, creates safety or legal risk, or may harm users, SawaSwap, or the public.",
           },
           {
-            title: "10. Changes to these terms",
-            body: "We may update these Terms and Conditions from time to time. Continued use of SawaSwap after updates means you accept the revised terms.",
+            title: "10. Safety and transaction responsibility",
+            body: "Meet in safe public places, inspect items before exchange, and avoid sending money or personal information in suspicious situations. SawaSwap provides tools for users to connect, but users remain responsible for verifying listings, assessing risk, and deciding whether to proceed with any exchange.",
           },
           {
-            title: "11. Contact",
-            body: "For support, questions, or reports, contact us at support@sawaswap.com.",
+            title: "11. Limitation of responsibility",
+            body: "SawaSwap is not responsible for user behavior, item quality, authenticity, payments, delivery, loss, damage, or disputes between users, except as required by applicable law.",
+          },
+          {
+            title: "12. Changes to these terms",
+            body: "We may update these Terms and Conditions from time to time to reflect product changes, safety practices, legal requirements, or operational needs. Continued use of SawaSwap after updates means you accept the revised terms.",
+          },
+          {
+            title: "13. Contact",
+            body: "For support, safety questions, or reports about listings, messages, or users, contact us at support@sawaswap.com.",
           },
         ],
       },
@@ -699,7 +707,7 @@ const resources = {
       },
       support: {
         title: "الدعم",
-        text: "تحتاج مساعدة أو تريد الإبلاغ عن مشكلة؟ تواصل معنا.",
+        text: "تحتاج مساعدة، أو تريد الإبلاغ عن منشور أو مستخدم، أو لديك مسألة تتعلق بالسلامة؟ تواصل معنا.",
         email: "support@sawaswap.com",
         noreply: "no-reply@sawaswap.com",
         location: "الأردن",
@@ -735,9 +743,9 @@ const resources = {
       terms: {
         badge: "قانوني",
         title: "الشروط والأحكام",
-        updated: "آخر تحديث: مايو 2026",
+        updated: "آخر تحديث: 30 مايو 2026",
         intro:
-          "توضح هذه الشروط والأحكام قواعد استخدام SawaSwap. باستخدامك للموقع أو التطبيق، فإنك توافق على الالتزام بهذه الشروط.",
+          "توضح هذه الشروط والأحكام قواعد استخدام SawaSwap. يجب قبول هذه الشروط قبل إنشاء الحساب أو الوصول إليه. باستخدامك للموقع أو التطبيق، فإنك توافق على الالتزام بها.",
         sections: [
           {
             title: "1. عن SawaSwap",
@@ -745,43 +753,51 @@ const resources = {
           },
           {
             title: "2. حسابات المستخدمين",
-            body: "قد يحتاج المستخدم إلى إنشاء حساب لنشر الأغراض، إنشاء العروض، المطابقة، أو إرسال الرسائل. أنت مسؤول عن حماية بيانات تسجيل الدخول الخاصة بك وعن أي نشاط يتم من خلال حسابك.",
+            body: "يجب على المستخدم قبول هذه الشروط قبل إنشاء الحساب أو الوصول إليه لنشر الأغراض أو إنشاء العروض أو المطابقة أو إرسال الرسائل. أنت مسؤول عن حماية بيانات تسجيل الدخول الخاصة بك وعن أي نشاط يتم من خلال حسابك.",
           },
           {
-            title: "3. المنشورات ومعلومات الأغراض",
-            body: "يجب على المستخدمين تقديم معلومات دقيقة عن الأغراض، بما في ذلك الحالة، الصور، الموقع، وما يتوقعونه بالمقابل. يمنع نشر أغراض وهمية أو مسروقة أو غير قانونية أو خطرة أو مضللة.",
+            title: "3. محتوى المستخدم ومعلومات الأغراض",
+            body: "المستخدم مسؤول عن المحتوى الذي ينشئه على SawaSwap، بما في ذلك منشورات الأغراض، الصور، الأوصاف، بيانات الملف الشخصي، العروض، ورسائل المحادثة. يجب تقديم معلومات دقيقة، ويُمنع نشر محتوى أو أغراض وهمية أو مسروقة أو مضللة أو غير قانونية أو خطرة.",
           },
           {
             title: "4. الشراء والبيع والتبديل",
             body: "SawaSwap يساعد المستخدمين على التواصل والاتفاق على الصفقات. عملية التبادل أو الدفع أو التسليم أو اللقاء أو الفحص تتم مباشرة بين المستخدمين. المستخدمون مسؤولون عن التأكد من جودة الغرض وشروط الصفقة قبل إتمامها.",
           },
           {
-            title: "5. الرسائل والمطابقات",
-            body: "يمكن للمستخدمين مراسلة بعضهم بعد المطابقة أو إنشاء عرض. يجب أن تكون الرسائل محترمة وخالية من المضايقة، الاحتيال، التهديد، الرسائل المزعجة، أو أي نشاط غير قانوني.",
+            title: "5. الرسائل والملفات الشخصية والسلوك المحترم",
+            body: "يمكن للمستخدمين مراسلة بعضهم بعد المطابقة أو إنشاء عرض، كما يمكنهم التفاعل عبر الملفات الشخصية والمنشورات. يجب أن تكون الرسائل والنشاطات المرتبطة بالملف الشخصي محترمة، ويُمنع أن تتضمن مضايقة أو تنمراً أو خطاب كراهية أو تهديداً أو استغلالاً جنسياً أو احتيالاً أو انتحالاً للشخصية أو رسائل مزعجة أو أي سلوك مسيء أو غير قانوني.",
           },
           {
-            title: "6. الأنشطة المحظورة",
-            body: "لا يجوز استخدام SawaSwap لنشر سلع غير قانونية، منتجات مقلدة، أسلحة، مخدرات، أغراض مسروقة، خدمات للبالغين، عمليات احتيال مالية، أو أي محتوى يخالف القوانين أو قواعد المنصة.",
+            title: "6. المحتوى والأنشطة المحظورة",
+            body: "لا يجوز استخدام SawaSwap لنشر أو مشاركة أو طلب أو الترويج لمحتوى أو سلوك مسيء أو مرفوض أو احتيالي أو غير قانوني. ويشمل ذلك الأغراض غير القانونية، السلع المقلدة، الأسلحة، المخدرات، الممتلكات المسروقة، المحتوى أو الخدمات الجنسية للبالغين، عمليات الاحتيال المالي، العروض المضللة، والمحتوى المسيء أو التهديدي أو التمييزي أو الذي يهدف إلى استغلال الآخرين أو الإضرار بهم.",
           },
           {
-            title: "7. السلامة",
-            body: "قابل الآخرين في أماكن عامة وآمنة، افحص الأغراض قبل التبادل، تجنب إرسال الأموال في حالات مشبوهة، وبلّغ عن المستخدمين أو المنشورات التي تبدو غير آمنة أو احتيالية.",
+            title: "7. أدوات الإبلاغ والحظر",
+            body: "يوفر SawaSwap أدوات داخل التطبيق للإبلاغ عن المنشورات أو المستخدمين، وكذلك لحظر المستخدمين. استخدم أدوات الإبلاغ إذا كنت تعتقد أن المحتوى أو السلوك غير آمن أو مسيء أو احتيالي أو غير قانوني أو مخالف لهذه الشروط. وقد يؤدي حظر مستخدم إلى إخفاء التفاعلات ذات الصلة في الخلاصة والمحادثات بينك وبين ذلك المستخدم داخل التطبيق.",
           },
           {
-            title: "8. تعليق الحساب",
-            body: "قد نقوم بإزالة المنشورات، تقييد بعض الميزات، أو تعليق الحسابات التي تخالف هذه الشروط أو تضر بالمستخدمين أو تسبب مخاطر قانونية أو أمنية.",
+            title: "8. الإشراف ومراجعة السلامة",
+            body: "قد نطبق فحوصات آلية أو يدوية على بعض الحقول النصية والتصنيفات والملفات الشخصية والعروض والرسائل والبلاغات للمساعدة في اكتشاف المحتوى المرفوض أو المحظور وتطبيق قواعد المنصة. تتم مراجعة بلاغات السلامة بأسرع ما يكون بشكل معقول، ونسعى إلى مراجعة المحتوى المرفوض المُبلّغ عنه خلال 24 ساعة.",
           },
           {
-            title: "9. حدود المسؤولية",
-            body: "SawaSwap يوفر أدوات لربط المستخدمين ببعضهم. نحن غير مسؤولين عن تصرفات المستخدمين، جودة الأغراض، المدفوعات، التسليم، الخسائر، الأضرار، أو النزاعات بين المستخدمين.",
+            title: "9. إزالة المحتوى وتقييد الحسابات",
+            body: "يجوز لنا إزالة المحتوى، أو الحد من ظهوره، أو تقييد الميزات، أو رفض المنشورات أو العروض، أو تعليق الحسابات أو إنهاؤها عندما نرى أن المحتوى أو السلوك يخالف هذه الشروط أو يسبب مخاطر قانونية أو أمنية أو قد يضر بالمستخدمين أو SawaSwap أو العامة.",
           },
           {
-            title: "10. تعديل الشروط",
-            body: "قد نقوم بتحديث هذه الشروط والأحكام من وقت لآخر. استمرار استخدام SawaSwap بعد التحديث يعني قبولك للشروط المعدلة.",
+            title: "10. السلامة ومسؤولية المعاملات",
+            body: "قابل الآخرين في أماكن عامة وآمنة، وافحص الأغراض قبل التبادل، وتجنب إرسال الأموال أو المعلومات الشخصية في الحالات المشبوهة. يوفر SawaSwap أدوات لربط المستخدمين، لكن يبقى المستخدم مسؤولاً عن التحقق من المنشورات وتقييم المخاطر واتخاذ قرار إتمام التبادل من عدمه.",
           },
           {
-            title: "11. التواصل",
-            body: "للدعم أو الأسئلة أو البلاغات، تواصل معنا عبر support@sawaswap.com.",
+            title: "11. حدود المسؤولية",
+            body: "SawaSwap غير مسؤول عن تصرفات المستخدمين أو جودة الأغراض أو أصالتها أو المدفوعات أو التسليم أو الخسائر أو الأضرار أو النزاعات بين المستخدمين، إلا بالقدر الذي يفرضه القانون المعمول به.",
+          },
+          {
+            title: "12. تعديل الشروط",
+            body: "قد نقوم بتحديث هذه الشروط والأحكام من وقت لآخر لتعكس تغييرات المنتج أو ممارسات السلامة أو المتطلبات القانونية أو الاحتياجات التشغيلية. استمرار استخدام SawaSwap بعد التحديث يعني قبولك للشروط المعدلة.",
+          },
+          {
+            title: "13. التواصل",
+            body: "للدعم أو أسئلة السلامة أو البلاغات المتعلقة بالمنشورات أو الرسائل أو المستخدمين، تواصل معنا عبر support@sawaswap.com.",
           },
         ],
       },
