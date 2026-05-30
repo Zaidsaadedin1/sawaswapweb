@@ -19,6 +19,19 @@ function baseFields(fields) {
 
 export const adminResources = [
   {
+    table: "blocked_users",
+    label: "Blocked Users",
+    primaryKey: "id",
+    defaultSort: { column: "created_at", ascending: false },
+    fields: {
+      id: { ...UUID_FIELD, readOnly: true },
+      blocker_id: { type: "text", required: true },
+      blocked_user_id: { type: "text", required: true },
+      reason: { type: "textarea" },
+      created_at: { ...TIMESTAMP_FIELD, readOnly: true },
+    },
+  },
+  {
     table: "categories",
     label: "Categories",
     primaryKey: "id",
@@ -102,12 +115,12 @@ export const adminResources = [
       description: { type: "textarea" },
       condition: {
         type: "select",
-        options: ["new", "like_new", "excellent", "good", "fair", "poor"],
+        options: ["new", "like_new", "good", "used", "damaged"],
         required: true,
       },
       status: {
         type: "select",
-        options: ["draft", "pending", "active", "inactive", "archived", "sold"],
+        options: ["active", "reserved", "traded", "hidden", "deleted"],
         required: true,
       },
       city: { type: "text" },
@@ -121,9 +134,12 @@ export const adminResources = [
       filter_id: { type: "text" },
       offer_type: {
         type: "select",
-        options: ["trade", "sell", "buy"],
+        options: ["trade", "sell", "buy", "free"],
         required: true,
       },
+      admin_moderation_notes: { type: "textarea" },
+      admin_moderated_at: { type: "datetime-local", readOnly: true },
+      admin_moderated_by: { type: "text", readOnly: true },
       moderation_status: {
         type: "select",
         options: ["accepted", "rejected"],
@@ -179,7 +195,7 @@ export const adminResources = [
       offer_id: { type: "text" },
       status: {
         type: "select",
-        options: ["active", "closed", "cancelled", "completed"],
+        options: ["active", "closed", "blocked"],
         required: true,
       },
     }),
@@ -228,6 +244,13 @@ export const adminResources = [
       total_trades: { type: "number" },
       is_verified: { type: "boolean" },
       is_admin: { type: "boolean" },
+      moderation_status: {
+        type: "select",
+        options: ["active", "warned", "suspended", "banned"],
+      },
+      moderation_note: { type: "textarea" },
+      moderated_at: { type: "datetime-local", readOnly: true },
+      moderated_by: { type: "text", readOnly: true },
     }),
   },
   {
@@ -242,10 +265,19 @@ export const adminResources = [
       reported_user_id: { type: "text" },
       reason: {
         type: "select",
-        options: ["spam", "fraud", "inappropriate", "stolen", "other"],
+        options: ["spam", "fake_item", "offensive_content", "scam", "harassment", "illegal_item", "other"],
         required: true,
       },
       details: { type: "textarea" },
+      status: {
+        type: "select",
+        options: ["open", "reviewing", "resolved", "dismissed"],
+        required: true,
+      },
+      source: { type: "text" },
+      reviewed_at: { type: "datetime-local", readOnly: true },
+      resolution_notes: { type: "textarea" },
+      moderator_id: { type: "text", readOnly: true },
     }),
   },
   {
@@ -259,9 +291,22 @@ export const adminResources = [
       item_id: { type: "text", required: true },
       action: {
         type: "select",
-        options: ["like", "skip", "save"],
+        options: ["skip", "make_offer", "removed"],
         required: true,
       },
+    }),
+  },
+  {
+    table: "terms_acceptance",
+    label: "Terms Acceptance",
+    primaryKey: "id",
+    defaultSort: { column: "accepted_at", ascending: false },
+    fields: baseFields({
+      id: { ...UUID_FIELD, readOnly: true },
+      user_id: { type: "text", required: true },
+      terms_version: { type: "text", required: true },
+      accepted_at: { type: "datetime-local", required: true },
+      source: { type: "text" },
     }),
   },
   {

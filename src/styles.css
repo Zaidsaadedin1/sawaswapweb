@@ -1856,6 +1856,168 @@ button {
   place-items: center;
 }
 
+.adminMetricGrid,
+.adminFilterGrid,
+.adminSplitPanels,
+.adminDetailGrid,
+.adminQuickActionGrid {
+  display: grid;
+  gap: 16px;
+}
+
+.adminMetricGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 24px;
+}
+
+.adminMetricCard,
+.adminDetailCard {
+  padding: 20px;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--white) 90%, var(--bg));
+  border: 1px solid rgba(229, 231, 235, 0.92);
+}
+
+.adminMetricCard {
+  display: grid;
+  gap: 6px;
+}
+
+.adminMetricCard strong {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.adminMetricCard span,
+.adminDetailCard strong {
+  color: var(--navy);
+}
+
+.adminMetricCard small,
+.adminProfileSummary span,
+.adminProfileSummary small {
+  color: var(--muted);
+}
+
+.adminMetricIcon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: var(--soft-green);
+  color: var(--green);
+}
+
+.adminMetricCard-danger {
+  border-color: rgba(185, 28, 28, 0.16);
+  background: rgba(185, 28, 28, 0.04);
+}
+
+.adminMetricCard-danger .adminMetricIcon {
+  background: rgba(185, 28, 28, 0.08);
+  color: #b91c1c;
+}
+
+.adminMetricCard-success {
+  border-color: rgba(0, 184, 117, 0.18);
+}
+
+.adminFilterGrid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin-top: 22px;
+  align-items: end;
+}
+
+.adminSearchBoxWide {
+  grid-column: span 2;
+}
+
+.adminSplitPanels {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.adminReportRowOverdue {
+  background: rgba(185, 28, 28, 0.04);
+}
+
+.adminReportRowPriority {
+  box-shadow: inset 4px 0 0 rgba(0, 184, 117, 0.5);
+}
+
+.adminModerationTable td:last-child,
+.adminModerationTable th:last-child {
+  min-width: 90px;
+}
+
+.adminDetailGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 16px;
+}
+
+.adminKeyValueList {
+  display: grid;
+  gap: 10px;
+}
+
+.adminKeyValueList div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.82);
+}
+
+.adminKeyValueList span {
+  text-align: right;
+}
+
+.adminDetailBlock {
+  margin-top: 18px;
+}
+
+.adminDetailBlock p {
+  margin: 8px 0 0;
+}
+
+.adminProfileSummary {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.adminProfileSummary div {
+  display: grid;
+  gap: 4px;
+}
+
+.adminAvatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  object-fit: cover;
+}
+
+.adminImageThumbLarge {
+  width: 96px;
+  height: 96px;
+}
+
+.adminQuickActionGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+.adminTextDanger {
+  color: #b91c1c;
+  font-weight: 800;
+}
+
+.adminSecondaryBtn.isActive {
+  background: rgba(0, 184, 117, 0.08);
+  border-color: rgba(0, 184, 117, 0.24);
+}
+
 .adminEmptyState {
   padding: 32px;
   max-width: 520px;
@@ -2479,6 +2641,18 @@ button {
 
   .adminSearchBox {
     min-width: 100%;
+  }
+
+  .adminMetricGrid,
+  .adminFilterGrid,
+  .adminSplitPanels,
+  .adminDetailGrid,
+  .adminQuickActionGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .adminSearchBoxWide {
+    grid-column: auto;
   }
 
   .adminDrawer {
