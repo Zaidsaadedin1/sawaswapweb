@@ -5,7 +5,7 @@ import { ArrowLeft, BadgeDollarSign, Download, PackageCheck, Repeat, Smartphone 
 import { fetchPublicItemById, formatItemPrice, getDisplayOfferType } from "../lib/publicItems";
 
 const ANDROID_APP_URL = "";
-const IOS_APP_URL = "";
+const IOS_APP_URL = "https://apps.apple.com/us/app/sawaswap/id6772575984";
 
 function handleStoreClick(url, event) {
   if (!url) {
