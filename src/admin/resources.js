@@ -330,32 +330,6 @@ export const adminResources = [
       },
       accepted_at: { type: "datetime-local" },
       completed_at: { type: "datetime-local" },
-      moderation_status: {
-        type: "select",
-        options: ["accepted", "rejected"],
-        required: true,
-        getInitialValue: (record) => {
-          if (record?.admin_review_status === "approved") {
-            return "accepted";
-          }
-
-          if (record?.admin_review_status === "cancelled") {
-            return "rejected";
-          }
-
-          return "";
-        },
-        virtual: true,
-      },
-      admin_review_status: {
-        type: "select",
-        options: ["pending", "approved", "cancelled"],
-        required: true,
-        readOnly: true,
-        hideInForm: true,
-      },
-      admin_reviewed_at: { type: "datetime-local", readOnly: true },
-      admin_review_notes: { type: "textarea" },
     }),
   },
   {
