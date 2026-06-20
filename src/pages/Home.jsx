@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     ArrowRightLeft,
+    Download,
     PlusCircle,
     MessageCircle,
     Search,
@@ -10,6 +11,7 @@ import {
     ShieldCheck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ANDROID_APP_URL, IOS_APP_URL } from "../lib/appStores";
 
 export default function Home() {
     const { t } = useTranslation();
@@ -63,6 +65,30 @@ export default function Home() {
                         <Link to="/support" className="secondaryBtn">
                             {t("hero.support")}
                         </Link>
+                    </div>
+
+                    <div className="heroStoreButtons">
+                        <a href={ANDROID_APP_URL} className="downloadStoreCard heroStoreCard">
+                            <div className="downloadStoreIcon">
+                                <Download size={22} />
+                            </div>
+                            <h3>{t("itemDownload.androidTitle")}</h3>
+                            <p>{t("itemDownload.androidText")}</p>
+                            <span className="primaryBtn downloadStoreBtn">
+                                {t("itemDownload.downloadNow")}
+                            </span>
+                        </a>
+
+                        <a href={IOS_APP_URL} className="downloadStoreCard heroStoreCard">
+                            <div className="downloadStoreIcon">
+                                <Download size={22} />
+                            </div>
+                            <h3>{t("itemDownload.iosTitle")}</h3>
+                            <p>{t("itemDownload.iosText")}</p>
+                            <span className="primaryBtn downloadStoreBtn">
+                                {t("itemDownload.downloadNow")}
+                            </span>
+                        </a>
                     </div>
                 </motion.div>
 

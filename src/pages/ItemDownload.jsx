@@ -3,9 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, BadgeDollarSign, Download, PackageCheck, Repeat, Smartphone } from "lucide-react";
 import { fetchPublicItemById, formatItemPrice, getDisplayOfferType } from "../lib/publicItems";
-
-const ANDROID_APP_URL = "";
-const IOS_APP_URL = "https://apps.apple.com/us/app/sawaswap/id6772575984";
+import { ANDROID_APP_URL, IOS_APP_URL } from "../lib/appStores";
 
 function handleStoreClick(url, event) {
   if (!url) {

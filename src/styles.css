@@ -290,6 +290,27 @@ button {
   flex-wrap: wrap;
 }
 
+.heroStoreButtons {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  max-width: 760px;
+}
+
+.heroStoreCard {
+  padding: 22px;
+}
+
+.heroStoreCard h3 {
+  font-size: 22px;
+}
+
+.heroStoreCard p {
+  margin-top: 10px;
+  font-size: 15px;
+}
+
 .primaryBtn,
 .secondaryBtn {
   padding: 16px 24px;
@@ -2560,6 +2581,11 @@ button {
 }
 
 @media (max-width: 1100px) {
+  .heroStoreButtons {
+    grid-template-columns: 1fr;
+    max-width: 100%;
+  }
+
   .itemsGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
