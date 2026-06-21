@@ -67,6 +67,19 @@ const resources = {
         downloadNow: "Download now",
         comingSoon: "Coming soon",
       },
+      installApp: {
+        badge: "Install SawaSwap",
+        title: "Taking you to the right app store.",
+        redirecting: "Redirecting now...",
+        openDetectedStore: "Open detected store",
+        openAppStore: "Open App Store",
+        openPlayStore: "Open Google Play",
+        states: {
+          ios: "We detected an iPhone or iPad and are opening the App Store.",
+          android: "We detected an Android phone and are opening Google Play.",
+          unknown: "We couldn't confirm your phone type, so you can choose your store below.",
+        },
+      },
       slider: {
         oneTitle: "Post your item",
         oneText:
@@ -730,6 +743,19 @@ const resources = {
         iosText: "افتح App Store لتحميل SawaSwap على آيفون.",
         downloadNow: "حمّل الآن",
         comingSoon: "قريباً",
+      },
+      installApp: {
+        badge: "ثبّت SawaSwap",
+        title: "ننقلك إلى متجر التطبيق المناسب.",
+        redirecting: "جارٍ التحويل الآن...",
+        openDetectedStore: "افتح المتجر المكتشف",
+        openAppStore: "افتح App Store",
+        openPlayStore: "افتح Google Play",
+        states: {
+          ios: "اكتشفنا جهاز iPhone أو iPad وسنفتح App Store.",
+          android: "اكتشفنا هاتف Android وسنفتح Google Play.",
+          unknown: "تعذر تحديد نوع هاتفك، لذلك يمكنك اختيار المتجر المناسب من الخيارات التالية.",
+        },
       },
       slider: {
         oneTitle: "انشر غرضك",

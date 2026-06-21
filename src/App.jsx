@@ -17,6 +17,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import Items from "./pages/Items";
 import ItemDownload from "./pages/ItemDownload";
+import InstallApp from "./pages/InstallApp";
 
 export default function App() {
   const { i18n } = useTranslation();
@@ -30,6 +31,7 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/install" element={<InstallApp />} />
         <Route path="/items" element={<Items />} />
         <Route path="/items/:itemId" element={<ItemDownload />} />
         <Route path="/how-it-works" element={<HowItWorks />} />

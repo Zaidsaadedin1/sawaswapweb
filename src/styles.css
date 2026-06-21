@@ -2211,6 +2211,84 @@ button {
   padding: 56px 7% 88px;
 }
 
+.installPage {
+  min-height: calc(100vh - 122px);
+  padding: 56px 7% 88px;
+}
+
+.installHero {
+  display: grid;
+  place-items: center;
+}
+
+.installCard {
+  width: min(760px, 100%);
+  padding: 36px;
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at top left, rgba(0, 184, 117, 0.14), transparent 28%),
+    linear-gradient(180deg, var(--white) 0%, color-mix(in srgb, var(--white) 88%, var(--bg)) 100%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.installIcon {
+  width: 74px;
+  height: 74px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background: var(--navy);
+  color: var(--green);
+  box-shadow: 0 18px 40px rgba(10, 37, 64, 0.18);
+}
+
+.installCard h1 {
+  margin: 18px 0 0;
+  font-size: clamp(38px, 5vw, 60px);
+  letter-spacing: -1.8px;
+}
+
+.installCard p {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.installStatusPill {
+  margin-top: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  background: var(--soft-green);
+  color: var(--green);
+  font-weight: 900;
+}
+
+.installActions {
+  margin-top: 26px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.installActions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.installStoreGrid {
+  margin-top: 26px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
 .itemsHero,
 .itemDownloadHero {
   position: relative;
@@ -2609,9 +2687,19 @@ button {
 
 @media (max-width: 720px) {
   .itemsPage,
-  .itemDownloadPage {
+  .itemDownloadPage,
+  .installPage {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  .installCard {
+    padding: 24px;
+    border-radius: 28px;
+  }
+
+  .installStoreGrid {
+    grid-template-columns: 1fr;
   }
 
   .itemsGrid {
